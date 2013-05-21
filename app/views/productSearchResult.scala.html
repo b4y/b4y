@@ -1,0 +1,17 @@
+@(title: String, items: List[ProductItem])
+@import helper._
+@main("Todo list") {
+<h1>Product list:</h1>
+<ul>
+    @items.map { item =>
+    <li>
+        <b><u>@item.name: </u></b><p></p>
+        Current price: @item.priceOriginal<p></p>
+        <img src=@item.img ><p></p>
+        @form(routes.Application.selectItem(item.name, item.asin, item.priceOriginal, item.img)) {
+        <input type="submit" value="Choose this item">
+        }
+    </li><p></p>
+    }
+</ul>
+}

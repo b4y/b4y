@@ -1,0 +1,16 @@
+@(name: String, asin: String, price: String, img: String, itemOrderForm: Form[(String, String, String, String, String)])
+@import helper._
+@main("Todo list") {
+<h1>Item Details:</h1>
+    <b><u>@name: </u></b><p></p>
+    Current price: @price<p></p>
+    @form(routes.Application.createItemOrder) {
+        @inputText(itemOrderForm("newPrice"))
+        <input type="hidden" name="name" value="@name">
+        <input type="hidden" name="asin" value="@asin">
+        <input type="hidden" name="price" value=@price>
+        <input type="hidden" name="img" value=@img>
+        <input type="submit" value="Create">
+    }
+    <img src=@img ><p></p>
+}

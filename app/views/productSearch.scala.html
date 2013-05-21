@@ -1,0 +1,14 @@
+@(title: String, prodSearchForm: Form[String])
+@import helper._
+
+
+@main("Todo list") {
+<h1>Product Search</h1>
+<h2>input a product name:</h2>
+@form(routes.Application.prodSearchResult) {
+@inputText(prodSearchForm("prodSearchWord"))
+<input type="submit" value="Submit">
+}
+<a href="items">items</a>
+
+}

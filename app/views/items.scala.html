@@ -1,0 +1,25 @@
+@(items: List[ProductItem])
+@import helper._
+<a href="signOut">Sign Out</a><bk></bk><p></p>
+<a href="prodLookup">prodLookup</a>
+
+@main("Todo list") {
+<h1>Product list:</h1>
+<ul>
+    @items.map { item =>
+    <li>
+        <b><u>@item.name: </u></b><p></p>
+        Original price: @item.priceOriginal<p></p>
+        Expected price: $@item.priceExpected<p></p>
+        <img src=@item.img ><p></p>
+        @form(routes.Application.buyItem(item.id)) {
+        <input type="submit" value="buy">
+        }
+        @form(routes.Application.deleteItem(item.id)) {
+        <input type="submit" value="Delete">
+        }
+    </li><p></p>
+    }
+</ul>
+}
+
