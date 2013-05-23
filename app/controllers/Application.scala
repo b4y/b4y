@@ -5,12 +5,14 @@ import i18n.Messages
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{User, ProductItem, TestClient, Task}
+import models._
 import templates.Html
 import scala.collection.JavaConverters._
+import java.util.Date
 
 object Application extends Controller {
   val SessionNameIsLoggedIn = "IsLoggedIn"
+  val SessionNameUserId = "UserId"
   val SessionValueIsLoggedIn = "true"
   def index = Action { implicit request => {
     val isLoggedIn = session.get(SessionNameIsLoggedIn)
@@ -80,14 +82,18 @@ object Application extends Controller {
     Ok(views.html.selectItem(name, asin, price, img, itemOrderForm))
   }
 
-  def createItemOrder() = Action {implicit request =>{
+  def saveUserItem() = Action {implicit request =>{
     val data = itemOrderForm.bindFromRequest.data
     val (name, asin, img, currentPrice, newPrice) = (data.get("name").get,
       data.get("asin")get,
       data.get("img")get,
       data.get("price").get,
       data.get("newPrice").get)
-      val aaa = ProductItem.save(name, asin, img, currentPrice, newPrice)
+      val itemSaved = ProductItem.save(name, asin, img, currentPrice, newPrice)
+      val userIdOption = session.get(SessionNameUserId)
+        val userId = userIdOption.get
+      val userItem = UserItem("", userId, itemSaved.id, new Date, currentPrice, newPrice)
+      val userItemSaved = UserItem.save(userItem)
       Redirect(routes.Application.items)
     }
   }
@@ -99,17 +105,22 @@ object Application extends Controller {
     "newPrice" -> nonEmptyText)
   )
 
-  def items = Action {
-    Ok(views.html.items(ProductItem.all()))
+  def items = Action {implicit request =>{
+    val userId = session.get(SessionNameUserId).get
+    val userItems = UserItem.findAll(userId)
+    Ok(views.html.items(ProductItem.findByItemIds(userItems.map(_.itemId))))
+  }
   }
 
   def deleteItem(id: String) = Action {
-    ProductItem.delete(id)
+    UserItem.delete(id)
     Redirect(routes.Application.items)
   }
 
+
+
   def buyItem(id: String) = Action {
-    val item = ProductItem.loadProductItem(id)
+    val item = ProductItem.findProductItemById(id)
     val purchaseUrl = testClient.addToCart(item.asin, 1)
 //    item.geta
     Redirect(purchaseUrl)
@@ -151,7 +162,9 @@ object Application extends Controller {
     else {
       val user = User("", firstName, lastName, email, password)
       User.save(user)
-      Redirect(routes.Application.prodSearch).withSession(session + (SessionNameIsLoggedIn -> SessionValueIsLoggedIn))
+      Redirect(routes.Application.prodSearch)
+        .withSession(session + (SessionNameIsLoggedIn -> SessionValueIsLoggedIn))
+        .withSession(session + (SessionNameUserId -> user.id))
     }
    }
   }
@@ -173,7 +186,9 @@ object Application extends Controller {
     else {
       val user = User.findByEmail(email)
       if (user.password.equalsIgnoreCase(password))
-        Redirect(routes.Application.items()).withSession(session + (SessionNameIsLoggedIn -> SessionValueIsLoggedIn))
+        Redirect(routes.Application.items())
+          .withSession(session + (SessionNameIsLoggedIn -> SessionValueIsLoggedIn))
+          .withSession(session + (SessionNameUserId -> user.id))
       else
         BadRequest(views.html.login(
           signUpForm.fill("firstName", "lastName", "email", "password")

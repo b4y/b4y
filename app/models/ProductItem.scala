@@ -10,8 +10,7 @@ import net.vz.mongodb.jackson.ObjectId
 import awsClient4.{OfferSummary, Item}
 import java.util.Date
 
-class ProductItem( @Id
-            @ObjectId     @JsonProperty("_id") val id: String,
+case class ProductItem( @Id  @JsonProperty("_id") val id: String,
             @BeanProperty @JsonProperty("date") val name: String,
             @BeanProperty @JsonProperty("date4") val asin: String,
             @BeanProperty @JsonProperty("date1") val img: String,
@@ -35,15 +34,19 @@ object ProductItem {
     items
   }
 
+  def findByItemIds(itemIds: List[String]): List[ProductItem] = {
+    itemIds.map(findProductItemById(_))
+  }
+
   def create(name: String, asin: String, img:String, priceOriginal:String, priceExpected:String):ProductItem = {
     val item = new ProductItem("", name, asin, img, priceOriginal, priceExpected)
     item
   }
 
-  def save(name: String, asin: String, img:String, priceOriginal:String, priceExpected:String){
+  def save(name: String, asin: String, img:String, priceOriginal:String, priceExpected:String):ProductItem ={
     val idCount: Long = (new Date()).getTime
     val item = new ProductItem(idCount.toString, name, asin, img, priceOriginal, priceExpected)
-    db.save(item)
+    db.save(item).getSavedObject
   }
 
   def delete(id: String) {
@@ -55,7 +58,7 @@ object ProductItem {
     }
   }
 
-  def loadProductItem(id: String):ProductItem = {
+  def findProductItemById(id: String):ProductItem = {
     val cursor = db.find().is("id", id)
     if (null != cursor && cursor.hasNext()) {
       val item =   cursor.next()

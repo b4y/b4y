@@ -21,7 +21,7 @@ GET     /main                  controllers.Application.main
 GET     /prodLookup            controllers.Application.prodSearch
 POST    /prodSearchResult      controllers.Application.prodSearchResult
 POST    /selectItem            controllers.Application.selectItem(name: String, asin:String, price: String,  img: String)
-POST    /createItemOrder       controllers.Application.createItemOrder()
+POST    /saveUserItem       controllers.Application.saveUserItem()
 GET     /items                  controllers.Application.items
 POST    /items/:id/delete       controllers.Application.deleteItem(id: String)
 POST    /items/:id/buy          controllers.Application.buyItem(id: String)

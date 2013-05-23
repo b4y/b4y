@@ -4,7 +4,7 @@
 <h1>Item Details:</h1>
     <b><u>@name: </u></b><p></p>
     Current price: @price<p></p>
-    @form(routes.Application.createItemOrder) {
+    @form(routes.Application.saveUserItem) {
         @inputText(itemOrderForm("newPrice"))
         <input type="hidden" name="name" value="@name">
         <input type="hidden" name="asin" value="@asin">

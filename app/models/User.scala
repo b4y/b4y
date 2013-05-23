@@ -11,8 +11,7 @@ import play.modules.mongodb.jackson.MongoDB
 import net.vz.mongodb.jackson.Id
 import net.vz.mongodb.jackson.ObjectId
 
-case class User( @Id
-                   @ObjectId     @JsonProperty("_id") var id: String,
+case class User( @Id     @JsonProperty("_id") var id: String,
                    @BeanProperty @JsonProperty("date") val firstName: String,
                    @BeanProperty @JsonProperty("date4") val lastName: String,
                    @BeanProperty @JsonProperty("date1") val email: String,
