@@ -1,7 +1,6 @@
 package controllers
 
 import play.api._
-import i18n.Messages
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -31,14 +30,14 @@ object Application extends Controller {
       errors => BadRequest(views.html.index(Task.all(), errors)),
       label => {
         Task.create(label)
-        Redirect(routes.Application.tasks)
+        Redirect(routes.Application.tasks())
       }
     )
   }
 
   def deleteTask(id: String) = Action {
     Task.delete(id)
-    Redirect(routes.Application.tasks)
+    Redirect(routes.Application.tasks())
   }
 
   val taskForm = Form(
@@ -82,17 +81,18 @@ object Application extends Controller {
 
   def saveUserItem() = Action {implicit request =>{
     val data = itemOrderForm.bindFromRequest.data
-    val (name, asin, img, currentPrice, newPrice) = (data.get("name").get,
-      data.get("asin")get,
-      data.get("img")get,
+    val (name, asin, img, currentPrice, newPrice) = (
+      data.get("name").get,
+      data.get("asin").get,
+      data.get("img").get,
       data.get("price").get,
       data.get("newPrice").get)
       val itemSaved = ProductItem.save(name, asin, img, currentPrice, newPrice)
       val userIdOption = session.get(SessionNameUserId)
         val userId = userIdOption.get
       val userItem = UserItem("", userId, itemSaved.id, new Date, currentPrice, newPrice)
-      val userItemSaved = UserItem.save(userItem)
-      Redirect(routes.Application.items)
+      UserItem.save(userItem)
+      Redirect(routes.Application.items())
     }
   }
   val itemOrderForm = Form(tuple(
@@ -112,22 +112,21 @@ object Application extends Controller {
 
   def deleteItem(id: String) = Action {
     UserItem.delete(id)
-    Redirect(routes.Application.items)
+    Redirect(routes.Application.items())
   }
 
 
 
-  def buyItem(id: String) = Action {
+  def buyItem(id: String, qty:Int = 1) = Action {
     val item = ProductItem.findProductItemById(id)
-    val purchaseUrl = testClient.addToCart(item.asin, 1)
-//    item.geta
+    val purchaseUrl = testClient.addToCart(item.asin, qty)
     Redirect(purchaseUrl)
   }
 
   def signUp(email: String, password: String) = Action {
     val user = User(null, null, null, email, password)
     User.save(user)
-    Redirect(routes.Application.items)
+    Redirect(routes.Application.items())
   }
 
   def start = Action {
@@ -144,8 +143,8 @@ object Application extends Controller {
     val data = signUpForm.bindFromRequest.data
     val (firstName, lastName, email, password) = (
       data.get("firstName").get,
-      data.get("lastName")get,
-      data.get("email")get,
+      data.get("lastName").get,
+      data.get("email").get,
       data.get("password").get)
     if (User.emailExisted(email)){
 //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
@@ -160,7 +159,7 @@ object Application extends Controller {
     else {
       val user = User("", firstName, lastName, email, password)
       User.save(user)
-      Redirect(routes.Application.prodSearch)
+      Redirect(routes.Application.prodSearch())
         .withSession(session + (SessionNameUserId -> user.id))
     }
    }
@@ -170,7 +169,7 @@ object Application extends Controller {
     signUpForm.discardingErrors
     val data = signUpForm.bindFromRequest.data
     val (email, password) = (
-      data.get("email")get,
+      data.get("email").get,
       data.get("password").get)
     if (!User.emailExisted(email)){
       //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
