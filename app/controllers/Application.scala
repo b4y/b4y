@@ -11,12 +11,10 @@ import scala.collection.JavaConverters._
 import java.util.Date
 
 object Application extends Controller {
-  val SessionNameIsLoggedIn = "IsLoggedIn"
   val SessionNameUserId = "UserId"
-  val SessionValueIsLoggedIn = "true"
   def index = Action { implicit request => {
-    val isLoggedIn = session.get(SessionNameIsLoggedIn)
-    if (isLoggedIn.isDefined && isLoggedIn.get.equalsIgnoreCase(SessionValueIsLoggedIn))
+    val userId = session.get(SessionNameUserId)
+    if (userId.isDefined)
           Redirect(routes.Application.items())
     else
       Redirect(routes.Application.signUp())
@@ -163,7 +161,6 @@ object Application extends Controller {
       val user = User("", firstName, lastName, email, password)
       User.save(user)
       Redirect(routes.Application.prodSearch)
-        .withSession(session + (SessionNameIsLoggedIn -> SessionValueIsLoggedIn))
         .withSession(session + (SessionNameUserId -> user.id))
     }
    }
@@ -187,7 +184,6 @@ object Application extends Controller {
       val user = User.findByEmail(email)
       if (user.password.equalsIgnoreCase(password))
         Redirect(routes.Application.items())
-          .withSession(session + (SessionNameIsLoggedIn -> SessionValueIsLoggedIn))
           .withSession(session + (SessionNameUserId -> user.id))
       else
         BadRequest(views.html.login(
