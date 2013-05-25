@@ -11,15 +11,14 @@ import play.modules.mongodb.jackson.MongoDB
 import net.vz.mongodb.jackson.Id
 import net.vz.mongodb.jackson.ObjectId
 
-case class User( @Id     @JsonProperty("_id") var id: String,
-                   @BeanProperty @JsonProperty("date") val firstName: String,
+case class User(   @Id           @JsonProperty("_id")   var id: String,
+                   @BeanProperty @JsonProperty("date")  val firstName: String,
                    @BeanProperty @JsonProperty("date4") val lastName: String,
                    @BeanProperty @JsonProperty("date1") val email: String,
                    @BeanProperty @JsonProperty("date2") val password: String
                    ) {
   def getId = id
 }
-
 
 object User {
   private lazy val db = MongoDB.collection("user", classOf[User], classOf[String])
