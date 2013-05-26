@@ -55,18 +55,20 @@ object Application extends Controller {
   }
 
   def prodSearch = Action {
-    Ok(views.html.productSearch("ProdSearch", prodSearchForm))
+    Ok(views.html.productSearch("ProdSearch", searchIndices, prodSearchForm))
   }
   val prodSearchForm = Form(
     "prodSearchWord" -> nonEmptyText
   )
 
   val testClient = new TestClient
+  var searchIndices = List("All", "Apparel", "Appliances", "ArtsAndCrafts", "Automotive", "Baby", "Beauty", "Blended", "Books", "Classical", "Collectibles", "DigitalMusic", "Grocery", "DVD", "Electronics", "HealthPersonalCare", "HomeGarden", "Industrial", "Jewelry", "KindleStore", "Kitchen", "LawnGarden", "Magazines", "Marketplace", "Merchants", "Miscellaneous", "MobileApps", "MP3Downloads", "Music", "MusicalInstruments", "MusicTracks", "OfficeProducts", "OutdoorLiving", "PCHardware", "PetSupplies", "Photo", "Shoes", "Software", "SportingGoods", "Tools", "Toys", "UnboxVideo", "VHS", "Video", "VideoGames", "Watches", "Wireless", "WirelessAccessories")
   def prodSearchResult = Action { implicit request =>
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
-        val itemsAws = testClient.runSearch(prodSearchWord)
+        val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
+        val itemsAws = testClient.runSearch(prodSearchWord, searchIndex);
         val items = itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList
 //        val items = List(ProductItem.convertProductItemFromAwsItemAAA())
 

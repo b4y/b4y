@@ -1,14 +1,20 @@
-@(title: String, prodSearchForm: Form[String])
+@(title: String, searchIndices: List[String], prodSearchForm: Form[String])
 @import helper._
 
-
-@main("Todo list") {
-<h1>Product Search</h1>
-<h2>input a product name:</h2>
-@form(routes.Application.prodSearchResult) {
-@inputText(prodSearchForm("prodSearchWord"))
-<input type="submit" value="Submit">
-}
 <a href="items">items</a>
-
+@main(title) {
+    <h1>Product Search</h1>
+    @form(routes.Application.prodSearchResult) {
+        <h2>Choose a category:</h2>
+        <select name="searchIndex">
+        @searchIndices.map { searchIndex =>
+            <option value=@searchIndex>@searchIndex</option>
+        }
+        </select>
+        <h2>Type what you want (required): </h2>
+        @inputText(prodSearchForm("prodSearchWord"))
+        <input type="submit" value="Submit">
+    }
 }
+
+

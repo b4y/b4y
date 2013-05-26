@@ -25,7 +25,7 @@ public class TestClient{
 //        ist.runSearch();
 //    }
 
-    public List<Item> runSearch(final String searchTerm)
+    public List<Item> runSearch(final String searchTerm, final String searchIndex)
     {
         AWSECommerceService service = new AWSECommerceService();
         service.setHandlerResolver(new AwsHandlerResolver(AWS_SECRET_KEY));
@@ -39,7 +39,7 @@ public class TestClient{
         java.util.List<ItemSearchRequest> list = ItemSearch.getRequest();
         list.add(SearchRequest);
 
-        SearchRequest.setSearchIndex("All");
+        SearchRequest.setSearchIndex(searchIndex);
         SearchRequest.setKeywords(searchTerm);
 
         ItemSearch.getRequest().add(SearchRequest);
