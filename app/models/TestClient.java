@@ -20,10 +20,7 @@ public class TestClient{
     private static final String AWS_SECRET_KEY = "IXNkCDvbk7CeHZbO2Ex3K8DMuSv0X456KH7vDrrV";
     private static final String ASSOCIATE_TAG = "buyforyou01-20";
 
-//    public static void main(String[] args) {
-//        TestClient ist = new TestClient();
-//        ist.runSearch();
-//    }
+
 
     public List<Item> runSearch(final String searchTerm, final String searchIndex)
     {
