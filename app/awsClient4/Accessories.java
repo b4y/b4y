@@ -76,7 +76,7 @@ public class Accessories {
         if (accessory == null) {
             accessory = new ArrayList<Accessories.Accessory>();
         }
-        return this.accessory;
+        return this.accessory; 
     }
 
 
