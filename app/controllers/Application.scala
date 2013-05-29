@@ -67,11 +67,15 @@ object Application extends Controller {
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
-        val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
-        val itemsAws = testClient.runSearch(prodSearchWord, searchIndex);
-        val items = itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList
-//        val items = List(ProductItem.convertProductItemFromAwsItemAAA())
-
+        val items = if (B4yUtil.isTest)
+          List(ProductItem("", "On China", "0143121316", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", "$9.50", null),
+            ProductItem("", "DK Eyewitness Travel Guide: China", "0756684307", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", "$18.35", null),
+            ProductItem("", "Lonely Planet China (Travel Guide)", "1742201385", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", "$21.65", null))
+        else {
+          val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
+          val itemsAws = testClient.runSearch(prodSearchWord, searchIndex);
+          itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList
+        }
         Ok(views.html.productSearchResult("prodlist", items))
       }
     )
