@@ -187,9 +187,11 @@ object Application extends Controller {
     }
     else {
       val user = User.findByEmail(email)
-      if (user.password.equalsIgnoreCase(password))
+      if (user.password.equalsIgnoreCase(password)){
+        B4yUtil.sendEmail(user.email, user.firstName)
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
+      }
       else
         BadRequest(views.html.login(
           signUpForm.fill("firstName", "lastName", "email", "password")
