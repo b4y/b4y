@@ -17,6 +17,7 @@ case class ProductItem( @Id  @JsonProperty("_id") val id: String,
             @BeanProperty @JsonProperty("date2") val priceOriginal: String,
             @BeanProperty @JsonProperty("date3") val priceExpected: String
                   ) {
+  def this() = this("", "", "", "", "", "")
   def getId = id
 }
 
