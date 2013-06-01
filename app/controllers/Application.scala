@@ -229,4 +229,10 @@ object Application extends Controller {
     val users = User.all()
     Ok(views.html.adminUserList(users))
   } }
+
+  def adminItemList = Action {implicit request =>{
+    val items = ProductItem.all()
+    Ok(views.html.adminItemList(items))
+  } }
+
 }

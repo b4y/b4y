@@ -32,4 +32,5 @@ POST    /signIn                 controllers.Application.signIn
 GET     /signOut                controllers.Application.signOut
 
 GET     /admin                  controllers.Application.admin
-GET     /users             controllers.Application.adminUserList
+GET     /adminUsers                  controllers.Application.adminUserList
+GET     /adminItems                  controllers.Application.adminItemList
