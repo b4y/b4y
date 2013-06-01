@@ -201,8 +201,32 @@ object Application extends Controller {
   }
 
   def signOut = Action { implicit request => {
-      Redirect(routes.Application.signUp()).withNewSession
+    Redirect(routes.Application.signUp()).withNewSession
   }
     //    Ok(views.html.index("Your new application is ready."))
   }
+
+  def admin = Action {implicit request => {
+    def isAdminUser :Boolean = {
+      val AdminUsers = List("jigang_hao@hotmail.com")
+      val userIdOption = session.get(SessionNameUserId)
+      if (userIdOption.isEmpty)
+        return false
+      val userId = userIdOption.get
+      val user = User.load(userId)
+      val result = AdminUsers.contains(user.email)
+      result
+    }
+    val userId = session.get(SessionNameUserId)
+    if (isAdminUser)
+      Ok(views.html.admin())
+    else
+      Ok(views.html.adminUnauthorized())
+  } }
+
+
+  def adminUserList = Action {implicit request =>{
+    val users = User.all()
+    Ok(views.html.adminUserList(users))
+  } }
 }
