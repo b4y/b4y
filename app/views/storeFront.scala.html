@@ -1,0 +1,21 @@
+@(isLoggedIn: Boolean)
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/main.css")">
+	</head>
+<body>
+<div id="banner_div" class="browser_wid block_boder">
+	<div id="static_links">
+		@const.constlinks()
+	</div>
+	<div>
+		@user.generalLogin(isLoggedIn)
+	</div>
+</div>	
+<div id="content_div" class="browser_wid block_boder">
+<span>test</span>
+</div>
+<div id="footer_div" class="browser_wid block_boder">
+<span>test</span></div>
+</body>
+</html>
