@@ -1,0 +1,18 @@
+@(isLoggedIn: Boolean)
+<div class="browser_wid">
+@search.searchInBanner(isLoggedIn)
+<div class="float_right right_margin_20">
+	<form id="signin_form" action="/signIn" method="post">
+		<ul>
+		@if(!isLoggedIn){
+			<li><input type="text" value='user name' name="email" onclick="if (this.value=='user name') this.value = ''" /></li>
+			<li><input type="password" name="password" value="****" onfocus="if (this.value=='****') this.value = ''"/></li>
+			<li><button onclick="form['signin_form'].submit();">Log in</button></li>
+			<li><button>Register</button></li>
+		}else{
+			<li><button>Log out</button></li>
+		}
+		</ul>
+	</form>
+</div>
+</div>

@@ -136,7 +136,8 @@ object Application extends Controller {
   }
 
   def start = Action {
-    Ok(views.html.login(null))
+    //Ok(views.html.login(null))
+    Ok(views.html.storeFront(false))
   }
   val signUpForm = Form(tuple(
     "firstName" -> nonEmptyText,

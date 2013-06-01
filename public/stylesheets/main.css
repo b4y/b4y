@@ -1,0 +1,71 @@
+/* page template */
+.browser_wid{
+	width: 1280px;
+	margin: 0 10 10 10;
+}
+
+.block_boder{
+	border:2px solid blue;
+}
+#banner_div{
+	height: 80px;
+}	
+#content_div{
+	height: 600px;
+}
+
+#footer_div{
+	height: 100px;
+}
+
+/* nav bar */
+#static_links{
+	width:100%;
+	background-color:lightblue;
+	margin:0;
+	padding-bottom:5;
+}
+
+#banner_div ul{
+	list-style-type:none;
+	margin:0;
+	padding-bottom:5;
+}
+
+#banner_div li{
+  display:inline; 
+  margin-right:10;
+}
+
+#banner_div a{
+	text-decoration:none;
+}
+
+/* search */
+#banner_div input.search{
+	width: 300px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+#banner_div input.dataInput{
+	width: 50px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+/*			general			*/
+.float_left{
+	float:left;
+}
+
+.float_right{
+	float:right;
+}
+.right_margin_20{
+	margin-right:20px;
+}
+.center_80_pcnt{
+	width:80%;
+	text-align:center;
+}
