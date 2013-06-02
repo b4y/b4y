@@ -6,9 +6,9 @@
     @items.map { item =>
     <li>
         <b><u>@item.name: </u></b><p></p>
-        Current price: @item.priceOriginal<p></p>
+        Current price: @item.priceHistory.get(0).price<p></p>
         <img src=@item.img ><p></p>
-        @form(routes.Application.selectItem(item.name, item.asin, item.priceOriginal, item.img)) {
+        @form(routes.Application.selectItem(item.name, item.asin, item.priceHistory.get(0).price.toInt, item.img)) {
         <input type="submit" value="Choose this item">
         }
     </li><p></p>
