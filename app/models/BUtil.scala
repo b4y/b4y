@@ -9,7 +9,11 @@ import controllers.Application
 object BUtil {
   val isTest = false
 
-  def sendEmail(recipientEmail: String, recipientName: String) {
+  def createSignUpEmailText(firstName:String, userId:String) = {
+    val htmlText = "Welcome to b4y, " + firstName + "! <br> Plelase click the link below to activate your account: <br>" +
+      "http://localhost:9000/activateAccount"
+  }
+  def sendEmail(recipientEmail: String, recipientName: String,  htmlText:String = "Welcome to b4y") {
     val sender = "jigang_hao@hotmail.com"
     Mailer.sendEmail(Email(
       subject = "Welcome " + recipientName + "!",
@@ -17,7 +21,7 @@ object BUtil {
       replyTo = None,
       recipients = List(Recipient(Message.RecipientType.TO, EmailAddress(recipientName, recipientEmail))),
       text = "text",
-      htmlText = "Welcome to b4y",
+      htmlText = htmlText,
       attachments = Seq.empty))
   }
 

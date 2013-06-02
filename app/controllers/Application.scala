@@ -179,6 +179,8 @@ object Application extends Controller {
     else {
       val user = User("", firstName, lastName, email, password, new util.ArrayList[ProductItem]())
       User.save(user)
+      BUtil.sendEmail(user.email, user.firstName)
+
       Redirect(routes.Application.prodSearch())
         .withSession(session + (SessionNameUserId -> user.id))
     }
@@ -202,7 +204,6 @@ object Application extends Controller {
     else {
       val user = User.findByEmail(email)
       if (user.password.equalsIgnoreCase(password)){
-        BUtil.sendEmail(user.email, user.firstName)
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
       }
@@ -242,6 +243,13 @@ object Application extends Controller {
   def adminUserList = Action {implicit request =>{
     val users = User.all()
     Ok(views.html.adminUserList(users))
+  } }
+
+  def adminDeleteUser(id: String) = Action {implicit request =>{
+    User.delete(id)
+    val users = User.all()
+    Ok(views.html.adminUserList(users))
+
   } }
 
   def adminItemList = Action {implicit request =>{

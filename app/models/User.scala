@@ -49,11 +49,8 @@ object User {
   }
 
   def delete(id: String) {
-    val cursor = db.find().is("id", id)
-    if (null != cursor && cursor.hasNext()) {
-      val user =   cursor.next()
-      db.remove(user)
-    }
+    db.removeById(id)
+
   }
 
   def load(id: String):User = {

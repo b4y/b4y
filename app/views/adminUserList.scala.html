@@ -7,7 +7,7 @@
 <ul>
     @users.map { user =>
     <li>
-        email: @user.email:
+        @form(routes.Application.adminDeleteUser(user.id)) { email: @user.email  <input type="submit" value="Delete"> }
     </li>
     }
 </ul>
