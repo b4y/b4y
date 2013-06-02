@@ -48,19 +48,8 @@ object User {
     db.save(user)
   }
 
-  def delete(id: String) {
-    db.removeById(id)
-
-  }
-
-  def load(id: String):User = {
-    val cursor = db.find().is("_id", id)
-    if (null != cursor && cursor.hasNext()) {
-      val user =   cursor.next()
-      user
-    } else
-      null
-  }
+  def delete(id: String) = db.removeById(id)
+  def load(id: String) = db.findOneById(id)
 
   def emailExisted(email: String):Boolean = {
     val cursor = db.find().is("email", email)
