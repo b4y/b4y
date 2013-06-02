@@ -20,6 +20,7 @@ class User(   @Id var id: String,
   def this() = this((new Date()).getTime.toString, "", "", "", "", new java.util.ArrayList[UserItem]())
   @Id  def getId = id
 
+  //todo: if user item of same product already exists, append user item
   def addItem(userItem: UserItem){
     if (null == userItems)
       userItems = new java.util.ArrayList[UserItem]()

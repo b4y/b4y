@@ -1,5 +1,6 @@
 package controllers
 
+import _root_.util.BUtil
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -76,7 +77,7 @@ object Application extends Controller {
         else {
           val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
           val itemsAws = testClient.runSearch(prodSearchWord, searchIndex)
-          itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList
+          itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
         }
         Ok(views.html.productSearchResult("prodlist", items))
       }
@@ -96,9 +97,10 @@ object Application extends Controller {
       data.get("price").get,
       data.get("newPrice").get)
     val itemId = if (ProductItem.isFieldValueInDb(ProductItem.DbFieldAsin, asin)) {
-      ProductItem.findByFieldValue(ProductItem.DbFieldAsin, asin).id
+      //todo: item already in system, append price info
+      ProductItem.findByField(ProductItem.DbFieldAsin, asin).id
     } else {
-      val item = ProductItem("", name, asin, img, List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
+      val item = ProductItem(name, asin, img, List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
       ProductItem.save(item).id
     }
     val userItem = new UserItem(itemId, new Date, priceOriginal.toInt, priceExpected.toInt)
@@ -261,7 +263,7 @@ object Application extends Controller {
   } }
 
   def adminItemList = Action {implicit request =>{
-    val items = ProductItem.all()
+    val items = ProductItem.findAll()
     Ok(views.html.adminItemList(items))
   } }
 

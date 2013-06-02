@@ -3,7 +3,7 @@
 @main("Todo list") {
 <h1>Item Details:</h1>
     <b><u>@name: </u></b><p></p>
-    Current price: @price<p></p>
+    Current price: $@(price.toFloat/100)<p></p>
     @form(routes.Application.saveUserItem) {
         @inputText(itemOrderForm("newPrice"))
         <input type="hidden" name="name" value="@name">

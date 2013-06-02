@@ -1,4 +1,4 @@
-package models
+package util
 
 import play.modules.mailer._
 import javax.mail.Message
@@ -7,14 +7,15 @@ import controllers.Application
 import java.util.Date
 import models.ProductItem.PriceAtTime
 import scala.collection.JavaConverters._
+import models.{User, ProductItem}
 
 
 object BUtil {
   val isTest = false
   val mockUpItems = List(
-    ProductItem("", "On China", "0143121316", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", List(PriceAtTime(true, 950, new Date)).asJava),
-    ProductItem("", "DK Eyewitness Travel Guide: China", "0756684307", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", List(PriceAtTime(true, 1835, new Date)).asJava),
-    ProductItem("", "Lonely Planet China (Travel Guide)", "1742201385", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", List(PriceAtTime(true, 2165, new Date)).asJava))
+    ProductItem("On China", "0143121316", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", List(PriceAtTime(available = true, price = 950, date = new Date)).asJava),
+    ProductItem("DK Eyewitness Travel Guide: China", "0756684307", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", List(PriceAtTime(available = true, price = 1835, date = new Date)).asJava),
+    ProductItem("Lonely Planet China (Travel Guide)", "1742201385", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", List(PriceAtTime(available = true, price = 2165, date = new Date)).asJava))
 
   //  def createSignUpEmailText(firstName:String, userId:String) = {
 //    val htmlText = "Welcome to b4y, " + firstName + "! <br> Plelase click the link below to activate your account: <br>" +

@@ -6,10 +6,10 @@
     @items.map { item =>
     <li>
         <b><u>@item.name: </u></b><p></p>
-        Current price: @item.priceHistory.get(0).price<p></p>
+        Current price: $@(item.priceHistory.get(0).price.toFloat/100)<p></p>
         <img src=@item.img ><p></p>
         @form(routes.Application.selectItem(item.name, item.asin, item.priceHistory.get(0).price.toInt, item.img)) {
-        <input type="submit" value="Choose this item">
+        <input type="submit" value="Set expected price for this item">
         }
     </li><p></p>
     }
