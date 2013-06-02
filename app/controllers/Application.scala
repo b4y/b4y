@@ -67,6 +67,7 @@ object Application extends Controller {
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
+System.out.println("I'm so here")        
         val items = if (B4yUtil.isTest)
           List(ProductItem("", "On China", "0143121316", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", "$9.50", null),
             ProductItem("", "DK Eyewitness Travel Guide: China", "0756684307", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", "$18.35", null),
@@ -76,7 +77,9 @@ object Application extends Controller {
           val itemsAws = testClient.runSearch(prodSearchWord, searchIndex);
           itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList
         }
-        Ok(views.html.productSearchResult("prodlist", items))
+        //Ok(views.html.productSearchResult("prodlist", items))
+System.out.println("I'm so here")        
+        Ok(views.html.itemList(searchIndices, items))
       }
     )
   }
@@ -112,7 +115,7 @@ object Application extends Controller {
   def items = Action {implicit request =>{
     val userId = session.get(SessionNameUserId).get
     val userItems = UserItem.findAll(userId)
-    Ok(views.html.items(ProductItem.findByItemIds(userItems.map(_.itemId))))
+    Ok(views.html.itemList(searchIndices, ProductItem.findByItemIds(userItems.map(_.itemId))))
   }
   }
 
@@ -137,7 +140,7 @@ object Application extends Controller {
 
   def start = Action {
     //Ok(views.html.login(null))
-    Ok(views.html.storeFront(false))
+    Ok(views.html.storeFront(false,searchIndices))
   }
   val signUpForm = Form(tuple(
     "firstName" -> nonEmptyText,

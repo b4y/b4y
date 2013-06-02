@@ -9,9 +9,29 @@
 }
 #banner_div{
 	height: 80px;
-}	
+}
+/*			content							*/
 #content_div{
 	height: 600px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
+div .content_box{
+	margin: 10px 10px 0px 10px;	
+}
+
+div .img_box{
+	height:160px;
+	width:125px;
+	margin: 10px 20px 0px 10px;
+}
+
+.img_box img{
+	max-width:100%; 
+	max-height:100%;
+	margin:auto;
+	display:block;		
 }
 
 #footer_div{
@@ -54,6 +74,12 @@
 	margin-right: 10px;
 }
 
+#banner_div select.dataSelect{
+	width: 100px;
+	height: 20px;
+	margin-right: 10px;
+}
+
 /*			general			*/
 .float_left{
 	float:left;
@@ -68,4 +94,13 @@
 .center_80_pcnt{
 	width:80%;
 	text-align:center;
+}
+.align_left{
+	text-align:left;
+}
+.padding_5{
+	padding: 5px 5px 5px 5px;
+}
+.margin_5{
+	margin: 5px 5px 5px 5px;
 }

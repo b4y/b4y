@@ -1,4 +1,4 @@
-@(isLoggedIn: Boolean)
+@(isLoggedIn: Boolean, searchIndices: List[String])
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/main.css")">
@@ -9,7 +9,7 @@
 		@const.constlinks()
 	</div>
 	<div>
-		@user.generalLogin(isLoggedIn)
+		@user.generalLogin(isLoggedIn, searchIndices)
 	</div>
 </div>	
 <div id="content_div" class="browser_wid block_boder">

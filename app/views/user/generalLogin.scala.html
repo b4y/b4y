@@ -1,6 +1,6 @@
-@(isLoggedIn: Boolean)
+@(isLoggedIn: Boolean, searchIndices: List[String])
 <div class="browser_wid">
-@search.searchInBanner(isLoggedIn)
+@search.searchInBanner(isLoggedIn, searchIndices: List[String])
 <div class="float_right right_margin_20">
 	<form id="signin_form" action="/signIn" method="post">
 		<ul>
