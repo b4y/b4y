@@ -84,15 +84,16 @@ object Application extends Controller {
     )
   }
 
-  def selectItem(name: String, asin:String, price: Int,  img: String) = Action {
-    Ok(views.html.selectItem(name, asin, price, img, itemOrderForm))
+  def selectItem(name: String, asin:String, detailPageURL:String, price: Int,  img: String) = Action {
+    Ok(views.html.selectItem(name, asin, detailPageURL, price, img, itemOrderForm))
   }
 
   def saveUserItem() = Action {implicit request =>{
     val data = itemOrderForm.bindFromRequest.data
-    val (name, asin, img, priceOriginal, priceExpected) = (
+    val (name, asin, detailPageURL, img, priceOriginal, priceExpected) = (
       data.get("name").get,
       data.get("asin").get,
+      data.get("detailPageURL").get,
       data.get("img").get,
       data.get("price").get,
       data.get("newPrice").get)
@@ -100,7 +101,8 @@ object Application extends Controller {
       //todo: item already in system, append price info
       ProductItem.findByField(ProductItem.DbFieldAsin, asin).id
     } else {
-      val item = ProductItem(name, asin, img, List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
+      val item = ProductItem(name, asin, detailPageURL, img,
+        List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
       ProductItem.save(item).id
     }
     val userItem = new UserItem(itemId, new Date, priceOriginal.toInt, priceExpected.toInt)
@@ -113,6 +115,7 @@ object Application extends Controller {
   val itemOrderForm = Form(tuple(
     "name" -> nonEmptyText,
     "asin" -> nonEmptyText,
+    "detailPageURL" -> nonEmptyText,
     "img" -> nonEmptyText,
     "priceOriginal" -> nonEmptyText,
     "newPrice" -> nonEmptyText)

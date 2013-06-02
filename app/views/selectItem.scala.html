@@ -1,4 +1,4 @@
-@(name: String, asin: String, price: Int, img: String, itemOrderForm: Form[(String, String, String, String, String)])
+@(name: String, asin: String, detailPageURL: String, price: Int, img: String, itemOrderForm: Form[(String, String, String, String, String, String)])
 @import helper._
 @main("Todo list") {
 <h1>Item Details:</h1>
@@ -8,9 +8,10 @@
         @inputText(itemOrderForm("newPrice"))
         <input type="hidden" name="name" value="@name">
         <input type="hidden" name="asin" value="@asin">
+        <input type="hidden" name="detailPageURL" value="@detailPageURL">
         <input type="hidden" name="price" value=@price>
         <input type="hidden" name="img" value=@img>
         <input type="submit" value="Create">
     }
-    <img src=@img ><p></p>
+    <img src=@img alt="altImg"><br>
 }

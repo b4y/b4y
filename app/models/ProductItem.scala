@@ -15,10 +15,11 @@ import beans.BeanProperty
 case class ProductItem(
             @BeanProperty @JsonProperty name: String,
             @BeanProperty @JsonProperty asin: String,
+            @BeanProperty @JsonProperty detailPageURL: String,
             @BeanProperty @JsonProperty img: String,
             @BeanProperty @JsonProperty priceHistory: java.util.List[PriceAtTime]
                   ) extends DbId {
-  def this() = this("", "", "", new util.ArrayList[PriceAtTime]())
+  def this() = this("", "", "","", new util.ArrayList[PriceAtTime]())
 }
 
 object ProductItem {
@@ -43,6 +44,7 @@ object ProductItem {
     priceHistory.add(PriceAtTime(available = isAvailable, price = price, date = new Date))
     ProductItem(item.getItemAttributes.getTitle,
       item.getASIN,
+      item.getDetailPageURL,
       item.getMediumImage.getURL,
       priceHistory
     )

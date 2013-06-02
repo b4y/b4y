@@ -5,13 +5,13 @@
 <ul>
     @items.map { item =>
     <li>
-        <b><u>@item.name: </u></b><p></p>
+        <b><u><a href=@item.detailPageURL  target="_blank">@item.name</a></u></b><br>
         Current price: $@(item.priceHistory.get(0).price.toFloat/100)<p></p>
-        <img src=@item.img ><p></p>
-        @form(routes.Application.selectItem(item.name, item.asin, item.priceHistory.get(0).price.toInt, item.img)) {
+        <img src=@item.img alt="altImg" >
+        @form(routes.Application.selectItem(item.name, item.asin, item.detailPageURL, item.priceHistory.get(0).price.toInt, item.img)) {
         <input type="submit" value="Set expected price for this item">
         }
-    </li><p></p>
+    </li>
     }
 </ul>
 }
