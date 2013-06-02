@@ -7,7 +7,8 @@ import play.api.data.Forms._
 import models._
 import templates.Html
 import scala.collection.JavaConverters._
-import java.util.Date
+import java.util
+
 
 object Application extends Controller {
   val SessionNameUserId = "UserId"
@@ -67,8 +68,7 @@ object Application extends Controller {
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
-System.out.println("I'm so here")        
-        val items = if (B4yUtil.isTest)
+          val items = if (B4yUtil.isTest)
           List(ProductItem("", "On China", "0143121316", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", "$9.50", null),
             ProductItem("", "DK Eyewitness Travel Guide: China", "0756684307", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", "$18.35", null),
             ProductItem("", "Lonely Planet China (Travel Guide)", "1742201385", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", "$21.65", null))
@@ -96,14 +96,13 @@ System.out.println("I'm so here")
       data.get("img").get,
       data.get("price").get,
       data.get("newPrice").get)
-      val itemSaved = ProductItem.save(name, asin, img, currentPrice, newPrice)
-      val userIdOption = session.get(SessionNameUserId)
-        val userId = userIdOption.get
-      val userItem = UserItem("", userId, itemSaved.id, new Date, currentPrice, newPrice)
-      UserItem.save(userItem)
-      Redirect(routes.Application.items())
-    }
-  }
+    val itemSaved = ProductItem.save(name, asin, img, currentPrice, newPrice)
+    val user = BUtil.getUser(session)
+    user.addItem(itemSaved)
+    User.save(user)
+    Redirect(routes.Application.items())
+  } }
+
   val itemOrderForm = Form(tuple(
     "name" -> nonEmptyText,
     "asin" -> nonEmptyText,
@@ -113,16 +112,37 @@ System.out.println("I'm so here")
   )
 
   def items = Action {implicit request =>{
+<<<<<<< HEAD
     val userId = session.get(SessionNameUserId).get
     val userItems = UserItem.findAll(userId)
     Ok(views.html.itemList(searchIndices, ProductItem.findByItemIds(userItems.map(_.itemId))))
   }
   }
+=======
+    val user:User = try {
+      BUtil.getUser(session)
+    } catch {
+      case ioe: IllegalStateException =>
+        Redirect(routes.Application.index())
+      null
+    }
+    if (null == user){
+      Redirect(routes.Application.signUp()).withNewSession
+    }
+    else {
+      val items = (Option(user.items) getOrElse (new util.ArrayList[ProductItem]())).asScala.toList
+      Ok(views.html.items(items))
+    }
+  }  }
+>>>>>>> 06edbd5fa43405e30fd8eb74479d627459ac98db
 
-  def deleteItem(id: String) = Action {
-    UserItem.delete(id)
+  def deleteItem(id: String) = Action {implicit request =>{
+    val user = BUtil.getUser(session)
+      val aaa = user.items.asScala.filterNot(_.id.equalsIgnoreCase(id)).toList.asJava
+    user.items =new util.ArrayList[ProductItem](aaa)
+      User.save(user)
     Redirect(routes.Application.items())
-  }
+  } }
 
 
 
@@ -133,7 +153,7 @@ System.out.println("I'm so here")
   }
 
   def signUp(email: String, password: String) = Action {
-    val user = User(null, null, null, email, password)
+    val user = User(null, null, null, email, password, new java.util.ArrayList[ProductItem]())
     User.save(user)
     Redirect(routes.Application.items())
   }
@@ -167,8 +187,10 @@ System.out.println("I'm so here")
 //        InternalServerError(views.html.login())
     }
     else {
-      val user = User("", firstName, lastName, email, password)
+      val user = User("", firstName, lastName, email, password, new util.ArrayList[ProductItem]())
       User.save(user)
+      BUtil.sendEmail(user.email, user.firstName)
+
       Redirect(routes.Application.prodSearch())
         .withSession(session + (SessionNameUserId -> user.id))
     }
@@ -192,7 +214,6 @@ System.out.println("I'm so here")
     else {
       val user = User.findByEmail(email)
       if (user.password.equalsIgnoreCase(password)){
-        B4yUtil.sendEmail(user.email, user.firstName)
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
       }
@@ -233,4 +254,23 @@ System.out.println("I'm so here")
     val users = User.all()
     Ok(views.html.adminUserList(users))
   } }
+
+  def adminDeleteUser(id: String) = Action {implicit request =>{
+    User.delete(id)
+    val users = User.all()
+    Ok(views.html.adminUserList(users))
+
+  } }
+
+  def adminUserItemList(userId: String) = Action {implicit request =>{
+    val user = BUtil.getUser(userId)
+    val items = (Option(user.items) getOrElse (new util.ArrayList[ProductItem]())).asScala.toList
+    Ok(views.html.items(items))
+  } }
+
+  def adminItemList = Action {implicit request =>{
+    val items = ProductItem.all()
+    Ok(views.html.adminItemList(items))
+  } }
+
 }

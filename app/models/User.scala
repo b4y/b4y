@@ -11,13 +11,21 @@ import play.modules.mongodb.jackson.MongoDB
 import net.vz.mongodb.jackson.Id
 import net.vz.mongodb.jackson.ObjectId
 
-case class User(   @Id           @JsonProperty("_id")   var id: String,
-                   @BeanProperty @JsonProperty("date")  val firstName: String,
+case class User(   @Id var id: String,
+                   @BeanProperty @JsonProperty("date5")  val firstName: String,
                    @BeanProperty @JsonProperty("date4") val lastName: String,
                    @BeanProperty @JsonProperty("date1") val email: String,
-                   @BeanProperty @JsonProperty("date2") val password: String
-                   ) {
-  def getId = id
+                   @BeanProperty @JsonProperty("date2") val password: String,
+                   @BeanProperty @JsonProperty("date3") var items: java.util.ArrayList[ProductItem]
+) {
+  def this() = this("", "", "", "", "", new java.util.ArrayList[ProductItem]())
+  @Id  def getId = id
+
+  def addItem(item: ProductItem){
+    if (null == items)
+      items = new java.util.ArrayList[ProductItem]()
+    items.add(item)
+  }
 }
 
 object User {
@@ -40,22 +48,8 @@ object User {
     db.save(user)
   }
 
-  def delete(id: String) {
-    val cursor = db.find().is("id", id)
-    if (null != cursor && cursor.hasNext()) {
-      val user =   cursor.next()
-      db.remove(user)
-    }
-  }
-
-  def load(id: String):User = {
-    val cursor = db.find().is("id", id)
-    if (null != cursor && cursor.hasNext()) {
-      val user =   cursor.next()
-      user
-    } else
-      null
-  }
+  def delete(id: String) = db.removeById(id)
+  def load(id: String) = db.findOneById(id)
 
   def emailExisted(email: String):Boolean = {
     val cursor = db.find().is("email", email)
@@ -69,5 +63,14 @@ object User {
     else
       cursor.next()
   }
+
+  //todo: price history: price/date
+  case class UserItemNew( @BeanProperty @JsonProperty("date1") val itemId: String,
+                       @BeanProperty @JsonProperty("date2") val date: Date,
+                       @BeanProperty @JsonProperty("date3") val priceOriginal: String,
+                       @BeanProperty @JsonProperty("date4") val priceExpected: String
+                       )
+
+
 }
 

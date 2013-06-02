@@ -32,4 +32,7 @@ POST    /signIn                 controllers.Application.signIn
 GET     /signOut                controllers.Application.signOut
 
 GET     /admin                  controllers.Application.admin
-GET     /users             controllers.Application.adminUserList
+GET     /adminUsers             controllers.Application.adminUserList
+POST    /adminUsers/:id         controllers.Application.adminDeleteUser(id: String)
+GET     /adminUserItems/:id     controllers.Application.adminUserItemList(id: String)
+GET     /adminItems             controllers.Application.adminItemList

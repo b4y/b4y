@@ -1,7 +1,8 @@
 @(title: String, searchIndices: List[String], prodSearchForm: Form[String])
 @import helper._
 
-<a href="items">items</a>
+<a href="signOut">Sign Out</a><br>
+<a href="items">Items</a>
 @main(title) {
     <h1>Product Search</h1>
     @form(routes.Application.prodSearchResult) {

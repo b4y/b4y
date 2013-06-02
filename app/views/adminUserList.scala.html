@@ -1,13 +1,15 @@
 @(users: List[User])
 @import helper._
-<a href="Admin">Admin</a><bk></bk><p></p>
+<a href="admin">Admin</a><br>
 
 @main("Users list") {
 <h1>Users:</h1>
 <ul>
     @users.map { user =>
     <li>
-        email: @user.email:
+        email: @user.email
+        @form(routes.Application.adminDeleteUser(user.id)) { <input type="submit" value="Delete"> }
+        @form(routes.Application.adminUserItemList(user.id)) { <input type="submit" value="Show Items"> }
     </li>
     }
 </ul>
