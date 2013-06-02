@@ -252,6 +252,12 @@ object Application extends Controller {
 
   } }
 
+  def adminUserItemList(userId: String) = Action {implicit request =>{
+    val user = BUtil.getUser(userId)
+    val items = (Option(user.items) getOrElse (new util.ArrayList[ProductItem]())).asScala.toList
+    Ok(views.html.items(items))
+  } }
+
   def adminItemList = Action {implicit request =>{
     val items = ProductItem.all()
     Ok(views.html.adminItemList(items))

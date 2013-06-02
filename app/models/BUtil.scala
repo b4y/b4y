@@ -30,6 +30,10 @@ object BUtil {
     if (userIdOption.isEmpty)
       throw new IllegalStateException("No " + Application.SessionNameUserId + "found in session")
     val userId = userIdOption.get
+    getUser(userId)
+  }
+
+  def getUser(userId: String):User = {
     val user = User.load(userId)
     if (null == user)
       throw new IllegalStateException("No user found in db for userId" + userId)
