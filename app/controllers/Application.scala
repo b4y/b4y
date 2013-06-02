@@ -170,7 +170,8 @@ object Application extends Controller {
       data.get("lastName").get,
       data.get("email").get,
       data.get("password").get)
-    if (User.emailExisted(email)){
+
+    if (User.isFieldValueInDb(User.DbFieldEmail, email)){
 //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
 //        ("error" -> Messages("contact.validation.errors")))
 //      BadRequest(views.html.login(signUpForm))
@@ -181,7 +182,7 @@ object Application extends Controller {
 //        InternalServerError(views.html.login())
     }
     else {
-      val user = new User("", firstName, lastName, email, password, new util.ArrayList[UserItem]())
+      val user = new User(firstName, lastName, email, password, new util.ArrayList[UserItem]())
       User.save(user)
       BUtil.sendEmail(user.email, user.firstName)
 
@@ -197,7 +198,7 @@ object Application extends Controller {
     val (email, password) = (
       data.get("email").get,
       data.get("password").get)
-    if (!User.emailExisted(email)){
+    if (!User.isFieldValueInDb(User.DbFieldEmail, email)){
       //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
       //        ("error" -> Messages("contact.validation.errors")))
       //      BadRequest(views.html.login(signUpForm))
@@ -206,7 +207,7 @@ object Application extends Controller {
           .withGlobalError("Email " + email + " is not registered")))
     }
     else {
-      val user = User.findByEmail(email)
+      val user = User.findByField(User.DbFieldEmail, email)
       if (user.password.equalsIgnoreCase(password)){
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
@@ -245,13 +246,13 @@ object Application extends Controller {
 
 
   def adminUserList = Action {implicit request =>{
-    val users = User.all()
+    val users = User.findAll()
     Ok(views.html.adminUserList(users))
   } }
 
   def adminDeleteUser(id: String) = Action {implicit request =>{
     User.delete(id)
-    val users = User.all()
+    val users = User.findAll()
     Ok(views.html.adminUserList(users))
 
   } }

@@ -10,7 +10,6 @@ import awsClient4.Item
 import java.util.Date
 import models.ProductItem.PriceAtTime
 import java.util
-import org.apache.commons.lang3.StringUtils
 import beans.BeanProperty
 
 case class ProductItem(
@@ -27,28 +26,12 @@ object ProductItem {
   private lazy val db = MongoDB.collection("item", classOf[ProductItem], classOf[String])
   private val dbDelegate = db.asInstanceOf[JacksonDBCollection[AnyRef,  String]]
 
-  def findAll() = DbUtil.findAll(dbDelegate).asInstanceOf[List[ProductItem]]
-//  def findAll(): List[ProductItem] = {
-//    val cursor = db.find()
-//    var items :List[ProductItem] = Nil
-//    while (cursor.hasNext) {
-//      val item =   cursor.next()
-//      items = item :: items
-//    }
-//    items
-//  }
-  def save(productItem: ProductItem) = DbUtil.save(dbDelegate, productItem).asInstanceOf[ProductItem]
-//  def save(productItem: ProductItem):ProductItem ={
-//    if (StringUtils.isBlank(productItem.id)){
-//      productItem.id = (new Date()).getTime.toString
-//    }
-//    db.save(productItem).getSavedObject
-//  }
-
-  def delete(id: String) = db.removeById(id)
   def load(id: String) = DbUtil.load(dbDelegate, id).asInstanceOf[ProductItem]
-  def isFieldValueInDb(field: String, value: String) = DbUtil.isFieldValueInDb(dbDelegate, field, value)
+  def findAll() = DbUtil.findAll(dbDelegate).asInstanceOf[List[ProductItem]]
   def findByField(field: String, value: String) = DbUtil.findOneByField(dbDelegate, field, value).asInstanceOf[ProductItem]
+  def isFieldValueInDb(field: String, value: String) = DbUtil.isFieldValueInDb(dbDelegate, field, value)
+  def save(productItem: ProductItem) = DbUtil.save(dbDelegate, productItem).asInstanceOf[ProductItem]
+  def delete(id: String) = db.removeById(id)
 
   def convertProductItemFromAwsItem(item: Item): ProductItem = {
     val (isAvailable, price: Int) = try {
