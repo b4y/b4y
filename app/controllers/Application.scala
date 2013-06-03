@@ -1,5 +1,6 @@
 package controllers
 
+import _root_.util.BUtil
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -8,6 +9,9 @@ import models._
 import templates.Html
 import scala.collection.JavaConverters._
 import java.util
+import util.Date
+import models.ProductItem.PriceAtTime
+import models.User.UserItem
 
 
 object Application extends Controller {
@@ -68,37 +72,44 @@ object Application extends Controller {
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
-          val items = if (B4yUtil.isTest)
-          List(ProductItem("", "On China", "0143121316", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", "$9.50", null),
-            ProductItem("", "DK Eyewitness Travel Guide: China", "0756684307", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", "$18.35", null),
-            ProductItem("", "Lonely Planet China (Travel Guide)", "1742201385", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", "$21.65", null))
+        val items = if (BUtil.isTest)
+          BUtil.mockUpItems
         else {
           val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
-          val itemsAws = testClient.runSearch(prodSearchWord, searchIndex);
-          itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList
+          val itemsAws = testClient.runSearch(prodSearchWord, searchIndex)
+          itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
         }
         //Ok(views.html.productSearchResult("prodlist", items))
 System.out.println("I'm so here")        
-        Ok(views.html.itemList(searchIndices, items))
+        Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
       }
     )
   }
 
-  def selectItem(name: String, asin:String, price: String,  img: String) = Action {
-    Ok(views.html.selectItem(name, asin, price, img, itemOrderForm))
+  def selectItem(name: String, asin:String, detailPageURL:String, price: Int,  img: String) = Action {
+    Ok(views.html.selectItem(name, asin, detailPageURL, price, img, itemOrderForm))
   }
 
   def saveUserItem() = Action {implicit request =>{
     val data = itemOrderForm.bindFromRequest.data
-    val (name, asin, img, currentPrice, newPrice) = (
+    val (name, asin, detailPageURL, img, priceOriginal, priceExpected) = (
       data.get("name").get,
       data.get("asin").get,
+      data.get("detailPageURL").get,
       data.get("img").get,
       data.get("price").get,
       data.get("newPrice").get)
-    val itemSaved = ProductItem.save(name, asin, img, currentPrice, newPrice)
+    val itemId = if (ProductItem.isFieldValueInDb(ProductItem.DbFieldAsin, asin)) {
+      //todo: item already in system, append price info
+      ProductItem.findByField(ProductItem.DbFieldAsin, asin).id
+    } else {
+      val item = ProductItem(name, asin, detailPageURL, img,
+        List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
+      ProductItem.save(item).id
+    }
+    val userItem = new UserItem(itemId, new Date, priceOriginal.toInt, priceExpected.toInt)
     val user = BUtil.getUser(session)
-    user.addItem(itemSaved)
+    user.addItem(userItem)
     User.save(user)
     Redirect(routes.Application.items())
   } }
@@ -106,19 +117,13 @@ System.out.println("I'm so here")
   val itemOrderForm = Form(tuple(
     "name" -> nonEmptyText,
     "asin" -> nonEmptyText,
+    "detailPageURL" -> nonEmptyText,
     "img" -> nonEmptyText,
     "priceOriginal" -> nonEmptyText,
     "newPrice" -> nonEmptyText)
   )
 
   def items = Action {implicit request =>{
-<<<<<<< HEAD
-    val userId = session.get(SessionNameUserId).get
-    val userItems = UserItem.findAll(userId)
-    Ok(views.html.itemList(searchIndices, ProductItem.findByItemIds(userItems.map(_.itemId))))
-  }
-  }
-=======
     val user:User = try {
       BUtil.getUser(session)
     } catch {
@@ -130,37 +135,32 @@ System.out.println("I'm so here")
       Redirect(routes.Application.signUp()).withNewSession
     }
     else {
-      val items = (Option(user.items) getOrElse (new util.ArrayList[ProductItem]())).asScala.toList
-      Ok(views.html.items(items))
+
+//      Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
+      Ok(views.html.itemList(searchIndices, (new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
     }
   }  }
->>>>>>> 06edbd5fa43405e30fd8eb74479d627459ac98db
+
 
   def deleteItem(id: String) = Action {implicit request =>{
     val user = BUtil.getUser(session)
-      val aaa = user.items.asScala.filterNot(_.id.equalsIgnoreCase(id)).toList.asJava
-    user.items =new util.ArrayList[ProductItem](aaa)
-      User.save(user)
+    val itemsRemained = user.userItems.asScala.filterNot(_.itemId.equalsIgnoreCase(id)).toList.asJava
+    user.userItems = new util.ArrayList[UserItem]()
+    user.userItems.addAll(  itemsRemained)
+    User.save(user)
     Redirect(routes.Application.items())
   } }
 
 
 
   def buyItem(id: String, qty:Int = 1) = Action {
-    val item = ProductItem.findProductItemById(id)
+    val item = ProductItem.load(id)
     val purchaseUrl = testClient.addToCart(item.asin, qty)
     Redirect(purchaseUrl)
   }
 
-  def signUp(email: String, password: String) = Action {
-    val user = User(null, null, null, email, password, new java.util.ArrayList[ProductItem]())
-    User.save(user)
-    Redirect(routes.Application.items())
-  }
-
   def start = Action {
-    //Ok(views.html.login(null))
-    Ok(views.html.storeFront(false,searchIndices))
+    Ok(views.html.storeFront(isLoggedIn = false,searchIndices))
   }
   val signUpForm = Form(tuple(
     "firstName" -> nonEmptyText,
@@ -176,7 +176,8 @@ System.out.println("I'm so here")
       data.get("lastName").get,
       data.get("email").get,
       data.get("password").get)
-    if (User.emailExisted(email)){
+
+    if (User.isFieldValueInDb(User.DbFieldEmail, email)){
 //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
 //        ("error" -> Messages("contact.validation.errors")))
 //      BadRequest(views.html.login(signUpForm))
@@ -187,7 +188,7 @@ System.out.println("I'm so here")
 //        InternalServerError(views.html.login())
     }
     else {
-      val user = User("", firstName, lastName, email, password, new util.ArrayList[ProductItem]())
+      val user = new User(firstName, lastName, email, password, new util.ArrayList[UserItem]())
       User.save(user)
       BUtil.sendEmail(user.email, user.firstName)
 
@@ -203,7 +204,7 @@ System.out.println("I'm so here")
     val (email, password) = (
       data.get("email").get,
       data.get("password").get)
-    if (!User.emailExisted(email)){
+    if (!User.isFieldValueInDb(User.DbFieldEmail, email)){
       //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
       //        ("error" -> Messages("contact.validation.errors")))
       //      BadRequest(views.html.login(signUpForm))
@@ -212,7 +213,7 @@ System.out.println("I'm so here")
           .withGlobalError("Email " + email + " is not registered")))
     }
     else {
-      val user = User.findByEmail(email)
+      val user = User.findByField(User.DbFieldEmail, email)
       if (user.password.equalsIgnoreCase(password)){
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
@@ -242,7 +243,7 @@ System.out.println("I'm so here")
       val result = AdminUsers.contains(user.email)
       result
     }
-    val userId = session.get(SessionNameUserId)
+
     if (isAdminUser)
       Ok(views.html.admin())
     else
@@ -251,25 +252,25 @@ System.out.println("I'm so here")
 
 
   def adminUserList = Action {implicit request =>{
-    val users = User.all()
+    val users = User.findAll()
     Ok(views.html.adminUserList(users))
   } }
 
   def adminDeleteUser(id: String) = Action {implicit request =>{
     User.delete(id)
-    val users = User.all()
+    val users = User.findAll()
     Ok(views.html.adminUserList(users))
 
   } }
 
   def adminUserItemList(userId: String) = Action {implicit request =>{
     val user = BUtil.getUser(userId)
-    val items = (Option(user.items) getOrElse (new util.ArrayList[ProductItem]())).asScala.toList
-    Ok(views.html.items(items))
+//    val userItems = (Option(user.userItems) getOrElse (new util.ArrayList[ProductItem]())).asScala.toList
+    Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
   } }
 
   def adminItemList = Action {implicit request =>{
-    val items = ProductItem.all()
+    val items = ProductItem.findAll()
     Ok(views.html.adminItemList(items))
   } }
 

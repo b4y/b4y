@@ -1,76 +1,81 @@
 package models
 
-import org.codehaus.jackson.annotate.JsonProperty
+import _root_.util.{DbUtil, DbId}
 import beans.BeanProperty
 import java.util.Date
-import org.apache.commons.lang3.StringUtils
 import play.api.Play.current
 import org.codehaus.jackson.annotate.JsonProperty
-import reflect.BeanProperty
 import play.modules.mongodb.jackson.MongoDB
-import net.vz.mongodb.jackson.Id
-import net.vz.mongodb.jackson.ObjectId
+import models.User.UserItem
+import scala.collection.JavaConverters._
+import java.util
+import net.vz.mongodb.jackson.JacksonDBCollection
+import models.UserWithProductItems.UserItemWithProductItem
 
-case class User(   @Id var id: String,
-                   @BeanProperty @JsonProperty("date5")  val firstName: String,
-                   @BeanProperty @JsonProperty("date4") val lastName: String,
-                   @BeanProperty @JsonProperty("date1") val email: String,
-                   @BeanProperty @JsonProperty("date2") val password: String,
-                   @BeanProperty @JsonProperty("date3") var items: java.util.ArrayList[ProductItem]
-) {
-  def this() = this("", "", "", "", "", new java.util.ArrayList[ProductItem]())
-  @Id  def getId = id
+class User(@BeanProperty @JsonProperty var firstName: String,
+           @BeanProperty @JsonProperty var lastName: String,
+           @BeanProperty @JsonProperty var email: String,
+           @BeanProperty @JsonProperty var password: String,
+           @BeanProperty @JsonProperty var userItems: java.util.ArrayList[UserItem]
+            ) extends DbId {
+  def this() = this("", "", "", "", new java.util.ArrayList[UserItem]())
 
-  def addItem(item: ProductItem){
-    if (null == items)
-      items = new java.util.ArrayList[ProductItem]()
-    items.add(item)
+  //todo: if user item of same product already exists, append user item
+  def addItem(userItem: UserItem){
+    if (null == userItems)
+      userItems = new java.util.ArrayList[UserItem]()
+    userItems.add(userItem)
   }
 }
 
 object User {
+  val DbFieldEmail = "email"
   private lazy val db = MongoDB.collection("user", classOf[User], classOf[String])
-
-  def all(): List[User] = {
-    val cursor = db.find()
-    var users :List[User] = Nil
-    while (cursor.hasNext()) {
-      val user =   cursor.next()
-      users = user :: users
-    }
-    users
-  }
-
-  def save(user:User){
-    if (StringUtils.isBlank(user.id)){
-      user.id = (new Date()).getTime.toString
-    }
-    db.save(user)
-  }
-
+  private val dbDelegate = db.asInstanceOf[JacksonDBCollection[AnyRef,  String]]
+  def load(id: String) = DbUtil.load(dbDelegate, id).asInstanceOf[User]
+  def findAll() = DbUtil.findAll(dbDelegate).asInstanceOf[List[User]]
+  def findByField(field: String, value: String) = DbUtil.findOneByField(dbDelegate, field, value).asInstanceOf[User]
+  def isFieldValueInDb(field: String, value: String) = DbUtil.isFieldValueInDb(dbDelegate, field, value)
+  def save(user: User) = DbUtil.save(dbDelegate, user).asInstanceOf[User]
   def delete(id: String) = db.removeById(id)
-  def load(id: String) = db.findOneById(id)
 
-  def emailExisted(email: String):Boolean = {
-    val cursor = db.find().is("email", email)
-    null != cursor && cursor.hasNext()
+  class UserItem(@BeanProperty @JsonProperty var itemId: String,
+                 @BeanProperty @JsonProperty var orderDate: Date,
+                 @BeanProperty @JsonProperty var priceOriginal: Int,
+                 @BeanProperty @JsonProperty var priceExpected: Int
+                  ) {
+    def this() = this("", null, 0, 0)
   }
+}
 
-  def findByEmail(email: String):User = {
-    val cursor = db.find().is("email", email)
-    if (null == cursor || !cursor.hasNext())
-      null
-    else
-      cursor.next()
+class UserWithProductItems(@BeanProperty @JsonProperty var userItemsWithProductItem: java.util.ArrayList[UserItemWithProductItem])
+  extends User {
+  def this() =  this(new  java.util.ArrayList[UserItemWithProductItem]())
+
+  def this(user: User) = {
+    this()
+    this.id = user.id
+    this.firstName = user.firstName
+    this.lastName = user.lastName
+    this.email = user.email
+    this.password = user.password
+    this.userItems = user.userItems
+     val userItemsWithProductItems = user.userItems.asScala.map(userItem => {
+      val userItemWithProductItem = new UserItemWithProductItem(ProductItem.load(userItem.itemId))
+       userItemWithProductItem.itemId = userItem.itemId
+       userItemWithProductItem.orderDate = userItem.orderDate
+       userItemWithProductItem.priceOriginal = userItem.priceOriginal
+       userItemWithProductItem.priceExpected = userItem.priceExpected
+       userItemWithProductItem
+    }).asJava
+    this.userItemsWithProductItem = new util.ArrayList[UserItemWithProductItem]()
+    this.userItemsWithProductItem.addAll(userItemsWithProductItems)
   }
-
-  //todo: price history: price/date
-  case class UserItemNew( @BeanProperty @JsonProperty("date1") val itemId: String,
-                       @BeanProperty @JsonProperty("date2") val date: Date,
-                       @BeanProperty @JsonProperty("date3") val priceOriginal: String,
-                       @BeanProperty @JsonProperty("date4") val priceExpected: String
-                       )
 
 
 }
 
+object UserWithProductItems {
+  class UserItemWithProductItem(@BeanProperty @JsonProperty var item: ProductItem) extends UserItem
+
+}

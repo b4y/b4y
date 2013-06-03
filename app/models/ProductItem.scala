@@ -1,85 +1,57 @@
 package models
 
 
+import _root_.util.{DbId, DbUtil}
 import play.api.Play.current
 import org.codehaus.jackson.annotate.JsonProperty
-import reflect.BeanProperty
 import play.modules.mongodb.jackson.MongoDB
-import net.vz.mongodb.jackson.Id
-import net.vz.mongodb.jackson.ObjectId
-import awsClient4.{OfferSummary, Item}
+import net.vz.mongodb.jackson.JacksonDBCollection
+import awsClient4.Item
 import java.util.Date
+import models.ProductItem.PriceAtTime
+import java.util
+import beans.BeanProperty
 
-case class ProductItem( @Id  @JsonProperty("_id") val id: String,
-            @BeanProperty @JsonProperty("date") val name: String,
-            @BeanProperty @JsonProperty("date4") val asin: String,
-            @BeanProperty @JsonProperty("date1") val img: String,
-            @BeanProperty @JsonProperty("date2") val priceOriginal: String,
-            @BeanProperty @JsonProperty("date3") val priceExpected: String
-                  ) {
-  def this() = this("", "", "", "", "", "")
-  def getId = id
+case class ProductItem(
+            @BeanProperty @JsonProperty name: String,
+            @BeanProperty @JsonProperty asin: String,
+            @BeanProperty @JsonProperty detailPageURL: String,
+            @BeanProperty @JsonProperty img: String,
+            @BeanProperty @JsonProperty priceHistory: java.util.List[PriceAtTime]
+                  ) extends DbId {
+  def this() = this("", "", "","", new util.ArrayList[PriceAtTime]())
 }
 
-
 object ProductItem {
+  val DbFieldAsin = "asin"
   private lazy val db = MongoDB.collection("item", classOf[ProductItem], classOf[String])
+  private val dbDelegate = db.asInstanceOf[JacksonDBCollection[AnyRef,  String]]
 
-  def all(): List[ProductItem] = {
-    val cursor = db.find()
-    var items :List[ProductItem] = Nil
-    while (cursor.hasNext()) {
-      val item =   cursor.next()
-      items = item :: items
+  def load(id: String) = DbUtil.load(dbDelegate, id).asInstanceOf[ProductItem]
+  def findAll() = DbUtil.findAll(dbDelegate).asInstanceOf[List[ProductItem]]
+  def findByField(field: String, value: String) = DbUtil.findOneByField(dbDelegate, field, value).asInstanceOf[ProductItem]
+  def isFieldValueInDb(field: String, value: String) = DbUtil.isFieldValueInDb(dbDelegate, field, value)
+  def save(productItem: ProductItem) = DbUtil.save(dbDelegate, productItem).asInstanceOf[ProductItem]
+  def delete(id: String) = db.removeById(id)
+
+  def convertProductItemFromAwsItem(item: Item): ProductItem = {
+    val (isAvailable, price: Int) = try {
+      (true, item.getOffers.getOffer.get(0).getOfferListing.get(0).getPrice.getAmount.intValue())
+    } catch {
+      case _: Throwable => (false, 0)
     }
-    items
-  }
-
-  def findByItemIds(itemIds: List[String]): List[ProductItem] = {
-    itemIds.map(findProductItemById(_))
-  }
-
-  def create(name: String, asin: String, img:String, priceOriginal:String, priceExpected:String):ProductItem = {
-    val item = new ProductItem("", name, asin, img, priceOriginal, priceExpected)
-    item
-  }
-
-  def save(name: String, asin: String, img:String, priceOriginal:String, priceExpected:String):ProductItem ={
-    val idCount: Long = (new Date()).getTime
-    val item = new ProductItem(idCount.toString, name, asin, img, priceOriginal, priceExpected)
-    db.save(item).getSavedObject
-  }
-
-  def delete(id: String) {
-    val cursor = db.find().is("id", id)
-    if (null != cursor && cursor.hasNext()) {
-      val item =   cursor.next()
-      db.remove(item)
-
-    }
-  }
-
-  def findProductItemById(id: String):ProductItem = {
-    val cursor = db.find().is("id", id)
-    if (null != cursor && cursor.hasNext()) {
-      val item =   cursor.next()
-      item
-    } else
-    null
-  }
-
-  def convertProductItemFromAwsItem(item:Item) :ProductItem = {
-    val price = Option(item.getOfferSummary) match {
-      case None => "N/A"
-      case Some(summary: OfferSummary) => summary.getLowestNewPrice.getFormattedPrice
-    }
-//    val offerListingId = item.getOffers.getOffer.get(0).getOfferListing.get(0).getOfferListingId
-    ProductItem.create(item.getItemAttributes.getTitle,
+    val priceHistory = new util.ArrayList[PriceAtTime]()
+    priceHistory.add(PriceAtTime(available = isAvailable, price = price, date = new Date))
+    ProductItem(item.getItemAttributes.getTitle,
       item.getASIN,
+      item.getDetailPageURL,
       item.getMediumImage.getURL,
-      price,
-      null)
+      priceHistory
+    )
   }
 
 
+  case class PriceAtTime(@BeanProperty @JsonProperty("date0") available: Boolean,
+                         @BeanProperty @JsonProperty("date1")price: Int,
+                         @BeanProperty @JsonProperty("date2")date: Date)
   }

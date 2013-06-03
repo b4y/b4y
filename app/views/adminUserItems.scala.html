@@ -1,4 +1,4 @@
-@(items: List[ProductItem])
+@(userItemWithProductItems: List[UserWithProductItems.UserItemWithProductItem])
 @import helper._
 <a href="admin">Admin</a><br>
 <a href="adminUsers">Users</a><br><br>
@@ -7,19 +7,19 @@
 @main("Todo list") {
 <h1>Product list:</h1>
 <ul>
-    @items.map { item =>
+    @userItemWithProductItems.map { userItemWithProductItem =>
     <li>
-        <b><u>@item.name: </u></b><p></p>
-        Original price: @item.priceOriginal<p></p>
-        Expected price: $@item.priceExpected<p></p>
-        <img src=@item.img ><p></p>
-        @form(routes.Application.buyItem(item.id)) {
+        <b><u>@userItemWithProductItem.item.name: </u></b><br>
+        Original price: @userItemWithProductItem.priceOriginal<br>
+        Expected price: $@userItemWithProductItem.priceExpected<br>
+        <img src=@userItemWithProductItem.item.img alt="Smiley face"><br>
+        @form(routes.Application.buyItem(userItemWithProductItem.itemId)) {
         <input type="submit" value="Buy Now">
         }
-        @form(routes.Application.deleteItem(item.id)) {
+        @form(routes.Application.deleteItem(userItemWithProductItem.itemId)) {
         <input type="submit" value="Delete">
         }
-    </li><p></p>
+    </li><
     }
 </ul>
 }

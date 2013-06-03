@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * This class contains all the logic for signing requests
+ * This class contains findAll the logic for signing requests
  * to the Amazon Product Advertising API.
  */
 public class SignedRequestsHelper {
