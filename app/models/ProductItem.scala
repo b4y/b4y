@@ -42,6 +42,7 @@ object ProductItem {
     }
     val priceHistory = new util.ArrayList[PriceAtTime]()
     priceHistory.add(PriceAtTime(available = isAvailable, price = price, date = new Date))
+    //todo: use real 'no-image' image
     val imgUrl = if (null == item.getMediumImage)
       "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg"
       else item.getMediumImage.getURL
