@@ -47,4 +47,12 @@ object BUtil {
       throw new IllegalStateException("No user found in db for userId" + userId)
     user
   }
+
+  def encrypt(passwordNotCoded: String) = {
+    val md = java.security.MessageDigest.getInstance("SHA-256")
+    // add a salt. can replace salt with generated salt value
+    val v = "salt" + passwordNotCoded
+    // return encoded value
+    new sun.misc.BASE64Encoder().encode(md.digest(v.getBytes("UTF-8")))
+  }
 }

@@ -190,7 +190,8 @@ object Application extends Controller {
 //        InternalServerError(views.html.login())
     }
     else {
-      val user = new User(firstName, lastName, email, password, new util.ArrayList[UserItem]())
+      val passwordEncrypted = BUtil.encrypt(password)
+      val user = new User(firstName, lastName, email, passwordEncrypted, new util.ArrayList[UserItem]())
       User.save(user)
       BUtil.sendEmail(user.email, user.firstName)
 
@@ -216,7 +217,8 @@ object Application extends Controller {
     }
     else {
       val user = User.findByField(User.DbFieldEmail, email)
-      if (user.password.equalsIgnoreCase(password)){
+      val passwordEncrypted = BUtil.encrypt(password)
+      if (user.password.equalsIgnoreCase(passwordEncrypted)){
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
       }
