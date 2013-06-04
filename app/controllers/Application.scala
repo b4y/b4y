@@ -79,9 +79,10 @@ object Application extends Controller {
           val itemsAws = testClient.runSearch(prodSearchWord, searchIndex)
           itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
         }
-        //Ok(views.html.productSearchResult("prodlist", items))
-System.out.println("I'm so here")        
-        Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
+        if (BUtil.isTest)
+          Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
+        else
+          Ok(views.html.productSearchResult("prodlist", items))
       }
     )
   }
@@ -135,9 +136,10 @@ System.out.println("I'm so here")
       Redirect(routes.Application.signUp()).withNewSession
     }
     else {
-
-//      Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
-      Ok(views.html.itemList(searchIndices, (new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
+      if (BUtil.isTest)
+        Ok(views.html.itemList(searchIndices, (new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
+      else
+        Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
     }
   }  }
 
@@ -160,7 +162,7 @@ System.out.println("I'm so here")
   }
 
   def start = Action {
-    Ok(views.html.storeFront(isLoggedIn = false,searchIndices))
+    Ok(views.html.storeFront(isLoggedIn = false, searchIndices = searchIndices))
   }
   val signUpForm = Form(tuple(
     "firstName" -> nonEmptyText,
