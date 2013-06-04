@@ -8,6 +8,7 @@ import java.util.Date
 import models.ProductItem.PriceAtTime
 import scala.collection.JavaConverters._
 import models.{User, ProductItem}
+import org.jsoup.Jsoup
 
 
 object BUtil {
@@ -54,5 +55,12 @@ object BUtil {
     val v = "salt" + passwordNotCoded
     // return encoded value
     new sun.misc.BASE64Encoder().encode(md.digest(v.getBytes("UTF-8")))
+  }
+
+  def curl(url:String) = {
+    val doc = Jsoup.connect(url.replace(" ", "+")).userAgent("Mozilla").get()
+    val bbb = doc.select("span:matchesOwn(Showing results)")
+    val aaa = bbb.parents().get(1).children().first().children().get(1).getAllElements.first().text()
+    aaa
   }
 }

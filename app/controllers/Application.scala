@@ -77,7 +77,14 @@ object Application extends Controller {
         else {
           val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
           val itemsAws = testClient.runSearch(prodSearchWord, searchIndex)
-          itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
+          val itemsFirstSearch = itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
+          if (itemsFirstSearch.size > 0)
+            itemsFirstSearch
+          else {
+            val prodSearchWordRevised = BUtil.curl("https://www.google.com/search?q=" + prodSearchWord)
+            val itemsAws = testClient.runSearch(prodSearchWordRevised, searchIndex)
+            itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
+          }
         }
         if (BUtil.isTest)
           Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))

@@ -10,9 +10,8 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     // Add your project dependencies here,
     "play.modules.mailer" %% "play-mailer" % "1.1.2",
-  "net.vz.mongodb.jackson" %% "play-mongo-jackson-mapper" % "1.1.0"
-//    jdbc,
-//    anorm
+    "net.vz.mongodb.jackson" %% "play-mongo-jackson-mapper" % "1.1.0",
+    "org.jsoup" % "jsoup" % "1.7.2"
   )
 
 
