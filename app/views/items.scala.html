@@ -11,7 +11,7 @@
         <b><u>@userItemWithProductItem.item.name </u></b><br>
         Original price: $@(userItemWithProductItem.priceOriginal.toFloat/100)<br>
         Expected price: $@userItemWithProductItem.priceExpected<br>
-        Created time: $@userItemWithProductItem.orderDate<br>
+        Created time: @userItemWithProductItem.orderDate<br>
         <img src=@userItemWithProductItem.item.img alt="alt"><br>
         @form(routes.Application.buyItem(userItemWithProductItem.itemId)) {
         <input type="submit" value="Buy Now">

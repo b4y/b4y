@@ -18,21 +18,7 @@ object BUtil {
     ProductItem("DK Eyewitness Travel Guide: China", "0756684307", "", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", List(PriceAtTime(available = true, price = 1835, date = new Date)).asJava),
     ProductItem("Lonely Planet China (Travel Guide)", "1742201385", "", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", List(PriceAtTime(available = true, price = 2165, date = new Date)).asJava))
 
-  //  def createSignUpEmailText(firstName:String, userId:String) = {
-//    val htmlText = "Welcome to b4y, " + firstName + "! <br> Plelase click the link below to activate your account: <br>" +
-//      "http://localhost:9000/activateAccount"
-//  }
-  def sendEmail(recipientEmail: String, recipientName: String,  htmlText:String = "Welcome to b4y") {
-    val sender = "jigang_hao@hotmail.com"
-    Mailer.sendEmail(Email(
-      subject = "Welcome " + recipientName + "!",
-      from = EmailAddress("B4y", sender),
-      replyTo = None,
-      recipients = List(Recipient(Message.RecipientType.TO, EmailAddress(recipientName, recipientEmail))),
-      text = "text",
-      htmlText = htmlText,
-      attachments = Seq.empty))
-  }
+
 
   def getUser(session: Session):User = {
     val userIdOption = session.get(Application.SessionNameUserId)

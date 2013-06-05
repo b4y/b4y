@@ -1,6 +1,6 @@
 package controllers
 
-import _root_.util.BUtil
+import _root_.util.{EmailUtil, BUtil}
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -198,12 +198,13 @@ object Application extends Controller {
     }
     else {
       val passwordEncrypted = BUtil.encrypt(password)
-      val user = new User(firstName, lastName, email, passwordEncrypted, new util.ArrayList[UserItem]())
-      User.save(user)
-      BUtil.sendEmail(user.email, user.firstName)
-
-      Redirect(routes.Application.prodSearch())
-        .withSession(session + (SessionNameUserId -> user.id))
+      val user = new User(firstName, lastName, email, passwordEncrypted, User.AccountStatusPending,
+                          new util.ArrayList[UserItem]())
+      val userSaved = User.save(user)
+      EmailUtil.sendSignUpEmail(user.email, user.firstName, user.lastName, userSaved.id)
+      Redirect(routes.Application.signUp()).withNewSession
+//      Redirect(routes.Application.prodSearch())
+//        .withSession(session + (SessionNameUserId -> user.id))
     }
    }
   }
@@ -225,7 +226,7 @@ object Application extends Controller {
     else {
       val user = User.findByField(User.DbFieldEmail, email)
       val passwordEncrypted = BUtil.encrypt(password)
-      if (user.password.equalsIgnoreCase(passwordEncrypted)){
+      if (user.password.equalsIgnoreCase(passwordEncrypted) && user.accountStatus == User.AccountStatusActive){
         Redirect(routes.Application.items())
           .withSession(session + (SessionNameUserId -> user.id))
       }
@@ -242,6 +243,11 @@ object Application extends Controller {
   }
     //    Ok(views.html.index("Your new application is ready."))
   }
+
+  def activateAccount(userId: String) = Action {implicit request =>{
+    User.activateAccount(userId)
+    Ok(views.html.acctivateAccount())
+  } }
 
   def admin = Action {implicit request => {
     def isAdminUser :Boolean = {

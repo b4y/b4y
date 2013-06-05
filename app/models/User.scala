@@ -9,16 +9,18 @@ import play.modules.mongodb.jackson.MongoDB
 import models.User.UserItem
 import scala.collection.JavaConverters._
 import java.util
-import net.vz.mongodb.jackson.JacksonDBCollection
+import net.vz.mongodb.jackson.{DBUpdate, JacksonDBCollection}
 import models.UserWithProductItems.UserItemWithProductItem
 
 class User(@BeanProperty @JsonProperty var firstName: String,
            @BeanProperty @JsonProperty var lastName: String,
            @BeanProperty @JsonProperty var email: String,
            @BeanProperty @JsonProperty var password: String,
+           @BeanProperty @JsonProperty var accountStatus: Int,
            @BeanProperty @JsonProperty var userItems: java.util.ArrayList[UserItem]
             ) extends DbId {
-  def this() = this("", "", "", "", new java.util.ArrayList[UserItem]())
+  def this() = this(firstName = "", lastName = "", email = "", password = "", accountStatus = 0,
+                    new java.util.ArrayList[UserItem]())
 
   //todo: if user item of same product already exists, append user item
   def addItem(userItem: UserItem){
@@ -30,6 +32,9 @@ class User(@BeanProperty @JsonProperty var firstName: String,
 
 object User {
   val DbFieldEmail = "email"
+  val DbFieldAccountStatus = "accountStatus"
+  val AccountStatusPending = 0
+  val AccountStatusActive = 1
   private lazy val db = MongoDB.collection("user", classOf[User], classOf[String])
   private val dbDelegate = db.asInstanceOf[JacksonDBCollection[AnyRef,  String]]
   def load(id: String) = DbUtil.load(dbDelegate, id).asInstanceOf[User]
@@ -38,13 +43,14 @@ object User {
   def isFieldValueInDb(field: String, value: String) = DbUtil.isFieldValueInDb(dbDelegate, field, value)
   def save(user: User) = DbUtil.save(dbDelegate, user).asInstanceOf[User]
   def delete(id: String) = db.removeById(id)
+  def activateAccount(userId:String) = db.updateById(userId, DBUpdate.set(DbFieldAccountStatus, AccountStatusActive))
 
   class UserItem(@BeanProperty @JsonProperty var itemId: String,
                  @BeanProperty @JsonProperty var orderDate: Date,
                  @BeanProperty @JsonProperty var priceOriginal: Int,
                  @BeanProperty @JsonProperty var priceExpected: Int
                   ) {
-    def this() = this("", null, 0, 0)
+    def this() = this(itemId = "", orderDate = null, priceOriginal = 0, priceExpected = 0)
   }
 }
 
@@ -71,8 +77,6 @@ class UserWithProductItems(@BeanProperty @JsonProperty var userItemsWithProductI
     this.userItemsWithProductItem = new util.ArrayList[UserItemWithProductItem]()
     this.userItemsWithProductItem.addAll(userItemsWithProductItems)
   }
-
-
 }
 
 object UserWithProductItems {
