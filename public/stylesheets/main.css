@@ -1,3 +1,41 @@
+/*			general			*/
+.float_left{
+	float:left;
+}
+
+.float_right{
+	float:right;
+}
+.right_margin_10{
+	margin-right:10px;
+}
+.right_margin_20{
+	margin-right:20px;
+}
+
+.center_text{
+	text-align:center;
+}
+
+.err_msg{
+  font-size:small;
+  color:red;	
+}
+
+.center_80_pcnt{
+	width:80%;
+	text-align:center;
+}
+.align_left{
+	text-align:left;
+}
+.padding_5{
+	padding: 5px 5px 5px 5px;
+}
+.margin_5{
+	margin: 5px 5px 5px 5px;
+}
+
 /* page template */
 .browser_wid{
 	width: 1280px;
@@ -80,27 +118,29 @@ div .img_box{
 	margin-right: 10px;
 }
 
-/*			general			*/
-.float_left{
-	float:left;
+/********** signup ***********/
+#signUp_div{
+	font-size:small	
+}
+#signUp_div .signup_label{
+	display: inline-block;
+	width: 180px;
+	text-align:center;
+	margin:5px 0px 5px 0px;
 }
 
-.float_right{
-	float:right;
+#signUp_div .signup_input{
+	width: 200px;
+	font-size:small
 }
-.right_margin_20{
-	margin-right:20px;
-}
-.center_80_pcnt{
-	width:80%;
-	text-align:center;
-}
-.align_left{
-	text-align:left;
-}
-.padding_5{
-	padding: 5px 5px 5px 5px;
-}
-.margin_5{
-	margin: 5px 5px 5px 5px;
+
+#signUp_div .signup_terms{
+	background-color:white;
+	border:1px solid gray;
+	width: 460px;
+	height: 300px;	
+	overflow-y: auto;
+	margin:0px 10px 10px 10px;
+	padding-left: 5px;
+	padding-right:5px;
 }

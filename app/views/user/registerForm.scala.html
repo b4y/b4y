@@ -1,0 +1,104 @@
+@()
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+<!-- keep the css here in order to override original -->
+<style type="text/css">
+    .ui-dialog .ui-dialog-content 
+    { 
+        position: relative; 
+        border: 0; 
+        padding: .5em 1em; 
+        background: none; 
+        overflow: auto; 
+        zoom: 1;
+        background-color: #ffd;
+        border: solid 1px #ea7;                    
+    }
+
+    .ui-dialog .ui-dialog-titlebar 
+    { 
+        display:none;
+    }
+
+    .ui-widget-content
+    {
+        border:none;
+    }
+</style> 
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript" src="@routes.Assets.at("/javascripts/js/common.js")"></script>		
+ <script>
+ var formVerified = true;
+$(function() {
+	$("#signup_div").dialog({width: 520, position:[350, 150]}).hide();
+	$("#pass_2").on('keyup change', function(){
+		var orig = $("#pass_1").val();
+		var newp =  $("#pass_2").val();
+		if(! ((""!=orig) && (orig.indexOf(newp) == 0))){
+			$("#pass_2").css("border-color","red");
+			formVerified = false;
+		}else{
+			$("#pass_2").css("border-color","green");
+			formVerified = true;
+		}
+	  }
+	);
+});
+
+function submtReg(){
+	if(!formVerified)
+		return;
+	if(!verifyEmail('input_email')){
+		$('#err_msg').text('Please enter a valid email address');
+	}else{
+		$('#err_msg').text('');
+	}
+	var submtData={"firstName": $('#input_firstName').val(),
+			       "lastName":$('#input_lastName').val(),
+			       "email":$('#input_email').val(),
+			       "password":$('#pass_1').val()};
+	
+	$.ajax({
+		type: "POST",
+		url: " /signUp",
+		data: submtData,
+		cache: false
+		}
+	).done(function( html ) {
+			alert("done");
+		}
+	);
+	
+}
+</script>
+<div id="signup_div">
+	<span class="signup_label">First name:</span>
+	<span><input class="signup_input right_margin_10" type="text" name="firstName" id="input_firstName"></span>
+	<span><button id="regis_submit" disabled="disabled" onclick="submtReg();">Submit</button></span>
+	<span class="signup_label">Last name:</span>
+	<span><input class="signup_input right_margin_10" type="text" name="lastName" id="input_lastName"></span>
+	<span><button onclick="$('#signup_div').dialog('close')">Cancel</button></span>
+	<br>
+	<span class="signup_label">Email:</span>
+	<span><input class="signup_input" type="text" name="email" id="input_email"></span>
+	<br>
+	<span class="signup_label">Password:</span>
+	<span><input class="signup_input" type="password" name="password" id="pass_1"></span>
+	<br>
+	<span class="signup_label">Verify Password:</span>
+	<span><input class="signup_input" type="password" name="password2" id="pass_2"></span>
+	<br>
+	<span class="err_msg center_text" id="err_msg"></span>
+	<br>
+	<span class="signup_label">Accept terms:</span>
+	<span><input type="checkbox" onclick="this.checked?$('#regis_submit').attr('disabled', false):$('#regis_submit').attr('disabled', true);" name="acceptterms"></span>
+	<br>
+	
+	<div class="signup_terms">
+		<div>
+		&nbsp;&nbsp;place holder for terms you have to accept 
+		as a member pay as 1 million $ every year
+		you have nothing for free
+		thanks please accept it 
+		</div>
+	</div>
+</div>

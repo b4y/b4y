@@ -1,4 +1,10 @@
 @(isLoggedIn: Boolean, searchIndices: List[String])
+  
+<script>
+function showRegisterBox(){
+	$("#signup_div").dialog({width: 520, position:[350, 150]}).show();
+}	
+</script>
 <div class="browser_wid">
 @search.searchInBanner(isLoggedIn, searchIndices: List[String])
 <div class="float_right right_margin_20">
@@ -8,7 +14,7 @@
 			<li><input type="text" value='user name' name="email" onclick="if (this.value=='user name') this.value = ''" /></li>
 			<li><input type="password" name="password" value="****" onfocus="if (this.value=='****') this.value = ''"/></li>
 			<li><button onclick="form['signin_form'].submit();">Log in</button></li>
-			<li><button>Register</button></li>
+			<li><button onclick='showRegisterBox(); return false;'>Register</button></li>
 		}else{
             <a href="/signOut">log out1</a>
 			<li><button>Log out</button></li>
