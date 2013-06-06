@@ -115,7 +115,7 @@ object Application extends Controller {
         List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
       ProductItem.save(item).id
     }
-    val userItem = new UserItem(itemId, new Date, priceOriginal.toInt, priceExpected.toInt)
+    val userItem = new UserItem(itemId, new Date, priceOriginal.toInt, (priceExpected.toFloat * 100).toInt)
     val user = BUtil.getUser(session)
     user.addItem(userItem)
     User.save(user)
@@ -289,6 +289,14 @@ object Application extends Controller {
   def adminItemList = Action {implicit request =>{
     val items = ProductItem.findAll()
     Ok(views.html.adminItemList(items))
+  } }
+
+  def runPriceMatch = Action {implicit request =>{
+    val items = UserItemMatched.runPriceMatch()
+    if (items.isEmpty)
+      Ok(views.html.adminItemNoMatch(items))
+    else
+      Ok(views.html.adminItemMatchedList(items))
   } }
 
 }

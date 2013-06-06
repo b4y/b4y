@@ -18,13 +18,13 @@ POST    /tasks/:id/delete       controllers.Application.deleteTask(id: String)
 GET     /test                  controllers.Application.test
 GET     /main                  controllers.Application.main
 
-GET     /prodLookup            controllers.Application.prodSearch
-POST    /prodSearchResult      controllers.Application.prodSearchResult
-POST    /selectItem            controllers.Application.selectItem(name: String, asin:String, detailPageURL:String, price: Int,  img: String)
-POST    /saveUserItem       controllers.Application.saveUserItem()
-GET     /items                  controllers.Application.items
-POST    /items/:id/delete       controllers.Application.deleteItem(id: String)
-POST    /items/:id/buy          controllers.Application.buyItem(id: String)
+GET     /prodLookup                 controllers.Application.prodSearch
+POST    /prodSearchResult           controllers.Application.prodSearchResult
+POST    /selectItem                 controllers.Application.selectItem(name: String, asin:String, detailPageURL:String, price: Int,  img: String)
+POST    /saveUserItem               controllers.Application.saveUserItem()
+GET     /items                      controllers.Application.items
+POST    /items/:id/delete           controllers.Application.deleteItem(id: String)
+POST    /items/:id/buy              controllers.Application.buyItem(id: String)
 
 GET     /signUp                     controllers.Application.start
 POST    /signUp                     controllers.Application.signUp
@@ -32,8 +32,9 @@ POST    /signIn                     controllers.Application.signIn
 GET     /signOut                    controllers.Application.signOut
 GET     /activateAccount/:userId    controllers.Application.activateAccount(userId: String)
 
-GET     /admin                  controllers.Application.admin
-GET     /adminUsers             controllers.Application.adminUserList
-POST    /adminUsers/:id         controllers.Application.adminDeleteUser(id: String)
-GET     /adminUserItems/:id     controllers.Application.adminUserItemList(id: String)
-GET     /adminItems             controllers.Application.adminItemList
+GET     /admin                      controllers.Application.admin
+GET     /adminUsers                 controllers.Application.adminUserList
+POST    /adminUsers/:id             controllers.Application.adminDeleteUser(id: String)
+GET     /adminUserItems/:id         controllers.Application.adminUserItemList(id: String)
+GET     /adminItems                 controllers.Application.adminItemList
+GET     /runPriceMatch              controllers.Application.runPriceMatch

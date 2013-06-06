@@ -76,7 +76,6 @@ public class TestClient{
     }
 
 
-    private final static String asinDefault = "0385349947";
     public String addToCart(final String asin, final int qty)
     {
         AWSECommerceService service = new AWSECommerceService();
@@ -119,5 +118,41 @@ public class TestClient{
         System.out.println(price);
 
         return result.get(0).getPurchaseURL();
+    }
+
+    public static List<Item> itemLookup(final String asin){
+        AWSECommerceService service = new AWSECommerceService();
+        service.setHandlerResolver(new AwsHandlerResolver(AWS_SECRET_KEY));
+        AWSECommerceServicePortType port = service.getAWSECommerceServicePort();
+
+        ItemLookup itemLookup = new ItemLookup();
+        itemLookup.setAWSAccessKeyId(AWS_ACCESS_KEY_ID);
+        itemLookup.setAssociateTag(ASSOCIATE_TAG);
+
+        ItemLookupRequest itemLookupRequest = new ItemLookupRequest();
+        java.util.List<ItemLookupRequest> list = itemLookup.getRequest();
+        list.add(itemLookupRequest);
+
+        itemLookupRequest.setIdType("ASIN");
+        itemLookupRequest.getItemId().add(asin);
+
+        java.util.List<String> responseGroup = itemLookupRequest.getResponseGroup();
+        responseGroup.add("OfferSummary");
+
+        Holder<OperationRequest> operationRequest = new Holder<OperationRequest>();
+        Holder<java.util.List<Items>> items = new Holder<java.util.List<Items>>();
+
+        port.itemLookup(
+                itemLookup.getMarketplaceDomain(),
+                itemLookup.getAWSAccessKeyId(),
+                itemLookup.getAssociateTag(),
+                itemLookup.getXMLEscaping(),
+                itemLookup.getValidate(),
+                itemLookup.getShared(),
+                itemLookup.getRequest(),
+                operationRequest,
+                items);
+        java.util.List<Items> result = items.value;
+        return result.get(0).getItem();
     }
 }

@@ -1,0 +1,19 @@
+@(items: List[UserItemMatched])
+@import helper._
+<a href="admin">Admin</a><br>
+
+@main("Item found list") {
+
+        <h1>Items matched:</h1>
+        <ul>
+            @items.map { UserItemMatched =>
+            <li>
+                user name: @UserItemMatched.user.firstName  @UserItemMatched.user.lastName<br>
+                item name: @UserItemMatched.item.name<br>
+                price asked: $@(UserItemMatched.priceExpected.toFloat/100)<br>
+                price found: $@(UserItemMatched.priceMatched.toFloat/100)
+            </li>
+            }
+        </ul>
+}
+
