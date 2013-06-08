@@ -58,3 +58,5 @@ object ProductItem {
   case class PriceAtTime( @BeanProperty @JsonProperty("date1")price: Int,
                          @BeanProperty @JsonProperty("date2")date: Date)
   }
+
+case class ProductItemAndIfOrderedPair(item: ProductItem, isAlreadyOrdered:Boolean)

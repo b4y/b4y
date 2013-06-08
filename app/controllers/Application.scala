@@ -86,6 +86,7 @@ object Application extends Controller {
             itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
           }
         }
+        //todo: if user login, and item already in cart, replace button text from 'order this item' to 'item already in cart' and disable button click
         if (BUtil.isTest)
           Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
         else
