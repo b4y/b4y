@@ -9,7 +9,7 @@
         Current price: $@(item.priceHistory.get(0).price.toFloat/100)<p></p>
         <img src=@item.img alt="altImg" >
         @form(routes.Application.selectItem(item.name, item.asin, item.detailPageURL, item.priceHistory.get(0).price.toInt, item.img)) {
-        <input type="submit" value="Set expected price for this item">
+        <input type="submit" value="Order this item">
         }
     </li>
     }

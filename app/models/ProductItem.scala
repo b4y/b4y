@@ -35,13 +35,13 @@ object ProductItem {
   def delete(id: String) = db.removeById(id)
 
   def convertProductItemFromAwsItem(item: Item): ProductItem = {
-    val (isAvailable, price: Int) = try {
-      (true, item.getOffers.getOffer.get(0).getOfferListing.get(0).getPrice.getAmount.intValue())
+    val price: Int = try {
+      item.getOffers.getOffer.get(0).getOfferListing.get(0).getPrice.getAmount.intValue()
     } catch {
-      case _: Throwable => (false, 0)
+      case _: Throwable => 0
     }
     val priceHistory = new util.ArrayList[PriceAtTime]()
-    priceHistory.add(PriceAtTime(available = isAvailable, price = price, date = new Date))
+    priceHistory.add(PriceAtTime(price = price, date = new Date))
     //todo: use real 'no-image' image
     val imgUrl = if (null == item.getMediumImage)
       "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg"
@@ -55,7 +55,6 @@ object ProductItem {
   }
 
 
-  case class PriceAtTime(@BeanProperty @JsonProperty("date0") available: Boolean,
-                         @BeanProperty @JsonProperty("date1")price: Int,
+  case class PriceAtTime( @BeanProperty @JsonProperty("date1")price: Int,
                          @BeanProperty @JsonProperty("date2")date: Date)
   }

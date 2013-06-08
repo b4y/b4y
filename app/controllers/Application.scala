@@ -95,9 +95,23 @@ object Application extends Controller {
   }
 
   def selectItem(name: String, asin:String, detailPageURL:String, price: Int,  img: String) = Action {
-    Ok(views.html.selectItem(name, asin, detailPageURL, price, img, itemOrderForm))
+    val isItemAlreadyOrdered = ProductItem.isFieldValueInDb(ProductItem.DbFieldAsin, asin)
+    if (isItemAlreadyOrdered) {
+      val item = ProductItem.findByField(ProductItem.DbFieldAsin, asin)
+      val latestPriceAtTime =  item.priceHistory.get(0)
+      if (latestPriceAtTime.price != price || latestPriceAtTime.date.getTime +  OneDay <  (new Date).getTime){
+        val newPRice = PriceAtTime(price, new Date())
+        item.priceHistory.add(0, newPRice)
+        ProductItem.save(item)
+      }
+    }
+    if (isItemAlreadyOrdered)
+      Redirect(routes.Application.items())
+    else
+      Ok(views.html.selectItem(name, asin, detailPageURL, price, img, itemOrderForm))
   }
 
+  val OneDay = 24 * 60 * 60 * 1000
   def saveUserItem() = Action {implicit request =>{
     val data = itemOrderForm.bindFromRequest.data
     val (name, asin, detailPageURL, img, priceOriginal, priceExpected) = (
@@ -107,15 +121,9 @@ object Application extends Controller {
       data.get("img").get,
       data.get("price").get,
       data.get("newPrice").get)
-    val itemId = if (ProductItem.isFieldValueInDb(ProductItem.DbFieldAsin, asin)) {
-      //todo: item already in system, append price info
-      ProductItem.findByField(ProductItem.DbFieldAsin, asin).id
-    } else {
-      val item = ProductItem(name, asin, detailPageURL, img,
-        List(PriceAtTime(available = true, price = priceOriginal.toInt, date = new Date)).asJava)
-      ProductItem.save(item).id
-    }
-    val userItem = new UserItem(itemId, new Date, priceOriginal.toInt, (priceExpected.toFloat * 100).toInt)
+    val item = ProductItem(name, asin, detailPageURL, img, List(PriceAtTime(price = priceOriginal.toInt, date = new Date)).asJava)
+    ProductItem.save(item)
+    val userItem = new UserItem(item.id, new Date, priceOriginal.toInt, (priceExpected.toFloat * 100).toInt)
     val user = BUtil.getUser(session)
     user.addItem(userItem)
     User.save(user)
