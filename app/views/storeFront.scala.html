@@ -13,13 +13,15 @@
 		@user.generalLogin(isLoggedIn, searchIndices)
 	</div>
 </div>	
-<div id="content_div" class="browser_wid block_boder">
-<span>test</span>
-</div>
-<div id="footer_div" class="browser_wid block_boder">
-<span>test</span>
-</div>
-@user.registerForm();
 
+<div id="content_div" class="browser_wid block_boder">
+@search.prodSearch(isLoggedIn, searchIndices)
+</div>
+
+<div id="footer_div" class="browser_wid block_boder">
+<span>test footer</span>
+</div>
+
+@user.registerForm();
 </body>
 </html>

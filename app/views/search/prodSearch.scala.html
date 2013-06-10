@@ -1,0 +1,85 @@
+@(isLoggedIn: Boolean,searchIndices: List[String])
+<script type="text/javascript">
+function searchProd(){
+	
+
+	var submtData = {"searchIndex":$("#itemSearchIndex").val(), 
+			         "prodSearchWord": $("#prodSearchKeyWord").val()
+			        };
+	
+	$.ajax({
+		type: "POST",
+		url: "/prodSearchResult",
+		data: submtData,
+		cache: false,
+		success: function(regResult){
+			$("#searchProds").hide();
+			$("#userItems").show();
+			var prodList = eval(regResult["prodList"]);
+			for(var i = 0 ; i < prodList.length; i ++){
+				var divStr = getProdItemSearch(prodList[i]);
+				var newNode = $(divStr);
+				$("#userItems").append(newNode);
+				$("#userItems").append("<br clear='both'/>");
+			}
+			$("#searchProdTemplate").hide();
+	      },
+	      error:function(){
+	          alert("error");
+	      }		
+		}
+	);	
+}
+
+function getProdItemSearch(productNode){
+	var divStr = "<div class='browser_wid align_left' id='" + productNode["asin"] +"'>"
+	+ "<div class='float_left img_box'>"
+	+ "<img src='" + productNode["img"] + "'/>"
+	+"</div>"
+	+"<div class='float_left content_box'>"
+	+"	<span name='prodName'><b>Name: </b>" + productNode["name"] + "</span>"
+	+"	<br clear='both'></br>"
+	+"	<span name='prodDescription'>Description:</span>"
+	+"	<br clear='both'/>"
+	+"	<span name='currentPrice'>Current price: </span>"
+	+"	<br clear='both'/>"
+    +"  Your Price: <input type='text' name='yourPrice'/>"
+	+"	<br clear='both'/>"    
+    +"    <button onclick='alert(\"aaa\")'>add</button>"
+	+"</div>"
+    + "</div>";
+   
+    alert(divStr);
+	return divStr;
+}
+
+</script>
+	<div id="searchProds">
+		<div>logo1 here</div>
+		<div>
+	        <select name="searchIndex" class="dataSelect" id="itemSearchIndex">
+	        @searchIndices.map { searchIndex =>
+	            <option value=@searchIndex>@searchIndex</option>
+	        }
+	        </select>		
+			<input type="text" name="prodSearchWord" class="search_wild" id="prodSearchKeyWord"/>
+			<button onclick="searchProd();">search</button>
+		</div>
+	</div>
+	<div id="userItems" class="float_left">
+    	<div class="browser_wid align_left" id="searchProdTemplate">
+    		<div class="float_left img_box">
+    			<img name="prodImg" src="http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg"/>
+    		</div>
+    		<div class="float_left content_box">
+	    		<span name="prodName">Name: on china</span>
+	    		<br clear="both"></br>
+	    		<span name="prodDescription">Description:</span>
+	    		<br clear="both"></br>
+	    		<span name="currentPrice">Current price: </span>
+	    		<br clear="both"></br>
+		        <input type="text" name="yourPrice"></input>
+		        <button onclick="alert('place holder')">add</button>
+    		</div>
+    	</div>	
+	</div>

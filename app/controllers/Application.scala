@@ -12,7 +12,12 @@ import java.util
 import util.Date
 import models.ProductItem.PriceAtTime
 import models.User.UserItem
-
+import play.api.libs.json.Json
+import scala.collection.mutable.ListBuffer
+import play.api.libs.json.JsObject
+import play.api.libs.json.JsValue
+import play.api.libs.json.JsArray
+import org.codehaus.jackson.map.ObjectMapper
 
 object Application extends Controller {
   val SessionNameUserId = "UserId"
@@ -49,8 +54,6 @@ object Application extends Controller {
     "label" -> nonEmptyText
   )
 
-
-
   def test = Action {
     Status(488)("Strange response type")
   }
@@ -72,9 +75,11 @@ object Application extends Controller {
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
-        val items = if (BUtil.isTest)
+        val items = if (BUtil.isTest){
+System.out.println("index: " + prodSearchForm.bindFromRequest.data.get("searchIndex").get);          
+System.out.println("prodSearchWord: " + prodSearchWord);        
           BUtil.mockUpItems
-        else {
+        }else {
           val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
           val itemsAws = testClient.runSearch(prodSearchWord, searchIndex)
           val itemsFirstSearch = itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
@@ -86,10 +91,21 @@ object Application extends Controller {
             itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
           }
         }
-        if (BUtil.isTest)
-          Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
-        else
+System.out.println("istest: " + BUtil.isTest)        
+        if (BUtil.isTest){
+        	val mapper = new ObjectMapper()
+        	val a = mapper.writeValueAsString(items.asJava)
+          	val prodSearchresult = Json.toJson(
+          		Map(
+          			"prodList" -> a
+          		)
+          	)
+            System.out.println("debug 777777");  
+          	Ok(prodSearchresult)
+          //Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
+        }else{
           Ok(views.html.productSearchResult("prodlist", items))
+        }
       }
     )
   }
@@ -186,6 +202,17 @@ object Application extends Controller {
       data.get("email").get,
       data.get("password").get)
 
+	val result = Json.toJson(
+        Map(
+          "success" -> Json.toJson("yes")
+        )
+      )
+System.out.println("debug 11111");      
+    if(true)
+      Ok(result)
+    else{
+System.out.println("debug 22222");
+    
     if (User.isFieldValueInDb(User.DbFieldEmail, email)){
 //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
 //        ("error" -> Messages("contact.validation.errors")))
@@ -207,6 +234,7 @@ object Application extends Controller {
 //        .withSession(session + (SessionNameUserId -> user.id))
     }
    }
+  }
   }
 
   def signIn() = Action {implicit request =>{

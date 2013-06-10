@@ -2,6 +2,7 @@ package models
 
 
 import _root_.util.{DbId, DbUtil}
+import scala.collection.JavaConverters._
 import play.api.Play.current
 import org.codehaus.jackson.annotate.JsonProperty
 import play.modules.mongodb.jackson.MongoDB
@@ -11,6 +12,12 @@ import java.util.Date
 import models.ProductItem.PriceAtTime
 import java.util
 import beans.BeanProperty
+import play.api.libs.json.JsObject
+import play.api.libs.json.Json
+import play.api.libs.json.JsValue
+import play.api.libs.json.JsArray
+import scala.util.parsing.json.JSONArray
+import org.codehaus.jackson.map.ObjectMapper;
 
 case class ProductItem(
             @BeanProperty @JsonProperty name: String,
@@ -20,6 +27,21 @@ case class ProductItem(
             @BeanProperty @JsonProperty priceHistory: java.util.List[PriceAtTime]
                   ) extends DbId {
   def this() = this("", "", "","", new util.ArrayList[PriceAtTime]())
+ /* 
+  def getJson(): JsValue ={
+    
+    return Json.toJson(
+       Map(
+           "name"-> Json.toJson(this.getName),
+           "asin"-> Json.toJson(this.getAsin),
+           "detailPageURL"-> Json.toJson(this.getDetailPageURL),
+           "img"-> Json.toJson(this.getImg)
+           //"priceHistory"-> Json.toJson(this.getPriceHistory)
+       )
+    )
+  }  
+  *
+  */
 }
 
 object ProductItem {
@@ -53,7 +75,6 @@ object ProductItem {
       priceHistory
     )
   }
-
 
   case class PriceAtTime(@BeanProperty @JsonProperty("date0") available: Boolean,
                          @BeanProperty @JsonProperty("date1")price: Int,

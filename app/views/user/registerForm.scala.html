@@ -56,18 +56,22 @@ function submtReg(){
 			       "lastName":$('#input_lastName').val(),
 			       "email":$('#input_email').val(),
 			       "password":$('#pass_1').val()};
-	
 	$.ajax({
 		type: "POST",
-		url: " /signUp",
+		url: "/signUp",
 		data: submtData,
-		cache: false
-		}
-	).done(function( html ) {
-			alert("done");
+		cache: false,
+		success: function(regResult){
+			alert(JSON.stringify(regResult));
+			if(regResult["success"] == "yes"){
+				$("#signup_div").dialog("close");	  
+			}
+	      },
+	      error:function(){
+	          alert("error");
+	      }		
 		}
 	);
-	
 }
 </script>
 <div id="signup_div">

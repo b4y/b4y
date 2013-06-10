@@ -55,6 +55,17 @@
 	overflow-x:hidden;
 }
 
+#searchProds{
+	text-align: center;
+	margin-top: 150px;	
+}
+
+#searchProds input.search_wild{
+	width: 300px;
+	height: 20px;
+	margin-right: 10px;
+}
+
 div .content_box{
 	margin: 10px 10px 0px 10px;	
 }
