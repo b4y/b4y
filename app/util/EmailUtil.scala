@@ -17,12 +17,12 @@ object EmailUtil {
     val user = userItemMatched.user
     val item = userItemMatched.item
     val subject = "Deal alert: " + item.name + " at $" + userItemMatched.priceMatched.toFloat/100
-    val text = "Good news " + user.firstName + ", we find deal for you!\n Here is the details:<br>\n" +
+    val text = "Good news " + user.firstName + ", we find deal for you!<br>\n Here is the details:<br><br>\n" +
       "item name: " + item.name + " <br>" +
       "price you asked: $" + userItemMatched.priceExpected.toFloat/100 + " <br>" +
-      "price we found for you: $" + userItemMatched.priceMatched.toFloat/100 + " <br>" +
-      "Hurry up before the deal is gone! Click the link below to buy: <br>" +
-      "<a href=\'\"" + item.detailPageURL + "\">" + "Buy " + item.name + "</a><br>"+
+      "price we found for you: $" + userItemMatched.priceMatched.toFloat/100 + " <br><br>" +
+      "Hurry up before the deal is gone! Click the link below to buy: <br>\n" +
+      "<a href=\"" + item.detailPageURL + "\">" + "Buy " + item.name + "</a><br><br>"+
     "Enjoy!<br><br>\n\nB4y"
     this.sendEmail(user.email, user.firstName + " " + user.lastName, subject, text)
   }
