@@ -76,12 +76,6 @@ object ProductItem {
     )
   }
 
-<<<<<<< HEAD
-  case class PriceAtTime(@BeanProperty @JsonProperty("date0") available: Boolean,
-                         @BeanProperty @JsonProperty("date1")price: Int,
-=======
-
   case class PriceAtTime( @BeanProperty @JsonProperty("date1")price: Int,
->>>>>>> c6dcd24bc2559268b26b402c5c8d322840bf55e8
                          @BeanProperty @JsonProperty("date2")date: Date)
   }
