@@ -26,6 +26,25 @@ function showUnlogedInWedgets(){
 	$('#searchProds').show();
 	$('#userItems').hide();
 }
+function generalLogin(){
+	var loginData = {"email":$('#input_login').val(),"password":$('#input_password').val()};
+	alert(JSON.stringify(loginData));
+	$.ajax({
+		type: "POST",
+		url: "/signIn",
+		data: loginData,
+		cache: false,
+		success: function(loginResult){
+			if(loginResult.success){
+				alert("login success");
+			}
+	      },
+	      error:function(){
+	          alert("error");
+	      }		
+		}
+	);		
+}
 </script>
 <div class="browser_wid">
 	<div class="float_left center_80_pcnt" id="searchInBannerSearch">
@@ -44,9 +63,9 @@ function showUnlogedInWedgets(){
 
 	<div class="float_right right_margin_20" id="generalLoginContainer">
 		<ul id="logInUl">
-			<li><input type="text" value='user name' name="email" onclick="if (this.value=='user name') this.value = ''" /></li>
-			<li><input type="password" name="password" value="****" onfocus="if (this.value=='****') this.value = ''"/></li>
-			<li><button onclick="form['signin_form'].submit();">Log in</button></li>
+			<li><input type="text" value='user name' name="email" id="input_login" onclick="if (this.value=='user name') this.value = ''" /></li>
+			<li><input type="password" name="password" id="input_password" value="****" onfocus="if (this.value=='****') this.value = ''"/></li>
+			<li><button onclick="generalLogin();">Log in</button></li>
 			<li><button onclick='showRegisterBox(); return false;'>Register</button></li>
 		</ul>
 		<ul id="logOutUl">

@@ -217,11 +217,7 @@ System.out.println("istest: " + BUtil.isTest)
           "success" -> Json.toJson("yes")
         )
       )
-System.out.println("debug 11111");      
-    if(true)
-      Ok(result)
-    else{
-System.out.println("debug 22222");
+
     
     if (User.isFieldValueInDb(User.DbFieldEmail, email)){
 //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
@@ -243,11 +239,12 @@ System.out.println("debug 22222");
 //      Redirect(routes.Application.prodSearch())
 //        .withSession(session + (SessionNameUserId -> user.id))
     }
+   
    }
-  }
-  }
+ }
 
   def signIn() = Action {implicit request =>{
+System.out.println("debuglogin111")    
     signUpForm.discardingErrors
     val data = signUpForm.bindFromRequest.data
     val (email, password) = (
@@ -264,9 +261,15 @@ System.out.println("debug 22222");
     else {
       val user = User.findByField(User.DbFieldEmail, email)
       val passwordEncrypted = BUtil.encrypt(password)
+System.out.println("debuglogin222")      
       if (user.password.equalsIgnoreCase(passwordEncrypted) && user.accountStatus == User.AccountStatusActive){
-        Redirect(routes.Application.items())
-          .withSession(session + (SessionNameUserId -> user.id))
+System.out.println("debuglogin333")         
+        val result = Json.toJson(
+                         Map("success" -> Json.toJson("yes") )
+                     )
+        Ok(result)
+        //Redirect(routes.Application.items())
+        //  .withSession(session + (SessionNameUserId -> user.id))
       }
       else
         BadRequest(views.html.login(
