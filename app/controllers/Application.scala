@@ -154,7 +154,14 @@ System.out.println("istest: " + BUtil.isTest)
     val user = BUtil.getUser(session)
     user.addItem(userItem)
     User.save(user)
-    Redirect(routes.Application.items())
+
+    val result = Json.toJson(
+      Map(
+        "success" -> Json.toJson("yes")
+      )
+    )
+    Ok(result)
+//    Redirect(routes.Application.items())
   } }
 
   val itemOrderForm = Form(tuple(

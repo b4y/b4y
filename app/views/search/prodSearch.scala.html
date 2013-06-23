@@ -10,11 +10,12 @@ function addProd(prodAsin){
 		if(prodAsin == prodList[i]["asin"]){
 			prodData = prodList[i];
 			prodData["newPrice"] = $('#'+prodAsin).find("[name='yourPrice']").first().val();
+            prodData["price"] = prodData["priceHistory"][0]["price"];
+            prodData["priceHistory"] =  null;
 			break;
 		}
 	}
 	if(loggedIn){
-		alert(JSON.stringify(prodData));
 		if(prodData != null){
 			$.ajax({
 				type: "POST",

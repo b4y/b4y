@@ -36,6 +36,7 @@ function generalLogin(){
 		success: function(loginResult){
 			if(loginResult.success){
                 showLogedInWedgets();
+                loggedIn = true;
 			}
 	      },
 	      error:function(){
