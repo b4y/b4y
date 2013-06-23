@@ -267,7 +267,7 @@ System.out.println("debuglogin333")
         val result = Json.toJson(
                          Map("success" -> Json.toJson("yes") )
                      )
-        Ok(result)
+        Ok(result).withSession(session + (SessionNameUserId -> user.id))
         //Redirect(routes.Application.items())
         //  .withSession(session + (SessionNameUserId -> user.id))
       }
