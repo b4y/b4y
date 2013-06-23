@@ -1,8 +1,6 @@
 @(isLoggedIn: Boolean, searchIndices: List[String])
 <script>
 $(function(){
-	var loggedIn = @isLoggedIn;
-	//var loggedIn = true;
 	if(loggedIn){
 		showLogedInWedgets();
 	}else{
@@ -17,7 +15,7 @@ function showLogedInWedgets(){
 	$('#searchInBannerEmpty').hide();
 	$('#logInUl').hide();
 	$('#logOutUl').show();
-	$('#searchItems').hide();
+	$('#searchProds').hide();
 	$('#userItems').show();
 }
 function showUnlogedInWedgets(){
@@ -25,26 +23,26 @@ function showUnlogedInWedgets(){
 	$('#searchInBannerEmpty').show();
 	$('#logInUl').show();
 	$('#logOutUl').hide();
-	$('#searchItems').show();
+	$('#searchProds').show();
 	$('#userItems').hide();
 }
 </script>
 <div class="browser_wid">
 	<div class="float_left center_80_pcnt" id="searchInBannerSearch">
 		<form id="actionSearch" action="prodSearchResult" method="POST">
-	        <select name="searchIndex" class="dataSelect">
+	        <select name="searchIndex" class="dataSelect" id="prodSearchIndexTop">
 	        @searchIndices.map { searchIndex =>
 	            <option value=@searchIndex>@searchIndex</option>
 	        }
 	        </select>		
-			<input type="text" name="prodSearchWord" class="search"/>
-			<button onclick="form['actionSearch'].submit();">search</button>
+			<input type="text" name="prodSearchWord" class="search" id="prodSearchKeyWordTop"/>
+			<button onclick="searchProd('#prodSearchIndexTop','#prodSearchKeyWordTop');">search</button>
 		</form>
 	</div>
 
 	<div id="searchInBannerEmpty" class="float_left"><span>&nbsp;</span></div>
 
-	<div class="float_right right_margin_20">
+	<div class="float_right right_margin_20" id="generalLoginContainer">
 		<ul id="logInUl">
 			<li><input type="text" value='user name' name="email" onclick="if (this.value=='user name') this.value = ''" /></li>
 			<li><input type="password" name="password" value="****" onfocus="if (this.value=='****') this.value = ''"/></li>

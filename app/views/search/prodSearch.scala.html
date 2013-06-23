@@ -1,12 +1,58 @@
 @(isLoggedIn: Boolean,searchIndices: List[String])
 <script type="text/javascript">
-function searchProd(){
-	
+var prodList = [];
+var withProd = false;
+var prodToBeAdded = null;
 
-	var submtData = {"searchIndex":$("#itemSearchIndex").val(), 
-			         "prodSearchWord": $("#prodSearchKeyWord").val()
+function addProd(prodAsin){
+	var prodData = null;
+	for(var i = 0; i < prodList.length; i ++){
+		if(prodAsin == prodList[i]["asin"]){
+			prodData = prodList[i];
+			prodData["newPrice"] = $('#'+prodAsin).find("[name='yourPrice']").first().val();
+			break;
+		}
+	}
+	if(loggedIn){
+		alert(JSON.stringify(prodData));
+		if(prodData != null){
+			$.ajax({
+				type: "POST",
+				url: "/saveUserItem",
+				data: prodData,
+				cache: false,
+				success: function(addProdResult){
+					if(addProdResult.success){
+						alert("Item added successfully");
+						prodToBeAdded = prodData;						
+						withProd = false;       
+						undateItemTab();
+					}
+			      },
+			      error:function(){
+			          alert("error");
+			      }		
+				}
+			);			
+		}
+	}else{
+        var answer = confirm("Please log in or register");
+        if (answer){
+			$('#generalLoginContainer').focus().css('border','dotted 1px');
+			$(window).scrollTop(0).scrollLeft(1000);
+        }
+		prodToBeAdded = prodData;						
+		withProd = true;       
+	}	
+}
+function undateItemTab(){
+	alert("got it");
+}
+function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
+	var submtData = {"searchIndex":$(searchIndexWidgetId).val(), 
+			         "prodSearchWord": $(prodKeyWordWidgetId).val()
 			        };
-	
+	alert(JSON.stringify(submtData));
 	$.ajax({
 		type: "POST",
 		url: "/prodSearchResult",
@@ -15,7 +61,7 @@ function searchProd(){
 		success: function(regResult){
 			$("#searchProds").hide();
 			$("#userItems").show();
-			var prodList = eval(regResult["prodList"]);
+			prodList = eval(regResult["prodList"]);
 			for(var i = 0 ; i < prodList.length; i ++){
 				var divStr = getProdItemSearch(prodList[i]);
 				var newNode = $(divStr);
@@ -32,7 +78,8 @@ function searchProd(){
 }
 
 function getProdItemSearch(productNode){
-	var divStr = "<div class='browser_wid align_left' id='" + productNode["asin"] +"'>"
+	var asin = productNode["asin"];
+	var divStr = "<div class='browser_wid align_left' id='" + asin +"'>"
 	+ "<div class='float_left img_box'>"
 	+ "<img src='" + productNode["img"] + "'/>"
 	+"</div>"
@@ -45,11 +92,11 @@ function getProdItemSearch(productNode){
 	+"	<br clear='both'/>"
     +"  Your Price: <input type='text' name='yourPrice'/>"
 	+"	<br clear='both'/>"    
-    +"    <button onclick='alert(\"aaa\")'>add</button>"
+    +"    <button onclick='addProd(" + asin +");'>add</button>"
 	+"</div>"
     + "</div>";
    
-    alert(divStr);
+  //  alert(divStr);
 	return divStr;
 }
 
@@ -57,13 +104,13 @@ function getProdItemSearch(productNode){
 	<div id="searchProds">
 		<div>logo1 here</div>
 		<div>
-	        <select name="searchIndex" class="dataSelect" id="itemSearchIndex">
+	        <select name="searchIndex" class="dataSelect" id="prodSearchIndex">
 	        @searchIndices.map { searchIndex =>
 	            <option value=@searchIndex>@searchIndex</option>
 	        }
 	        </select>		
 			<input type="text" name="prodSearchWord" class="search_wild" id="prodSearchKeyWord"/>
-			<button onclick="searchProd();">search</button>
+			<button onclick="searchProd('#prodSearchIndex','#prodSearchKeyWord');">search</button>
 		</div>
 	</div>
 	<div id="userItems" class="float_left">
