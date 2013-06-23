@@ -17,7 +17,7 @@ POST    /tasks/:id/delete       controllers.Application.deleteTask(id: String)
 
 GET     /main                  controllers.Application.main
 
-GET     /prodLookup                 controllers.Application.prodSearch
+GET     /prodLookup                 controllers.Application.prodSearch 
 POST    /prodSearchResult           controllers.Application.prodSearchResult
 POST    /selectItem                 controllers.Application.selectItem(name: String, asin:String, detailPageURL:String, price: Int,  img: String)
 POST    /saveUserItem               controllers.Application.saveUserItem()
