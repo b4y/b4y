@@ -15,7 +15,6 @@ POST    /tasks                  controllers.Application.newTask
 POST    /tasks/:id/delete       controllers.Application.deleteTask(id: String)
 
 
-GET     /test                  controllers.Application.test
 GET     /main                  controllers.Application.main
 
 GET     /prodLookup                 controllers.Application.prodSearch

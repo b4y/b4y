@@ -60,10 +60,6 @@ object Application extends Controller {
     "label" -> nonEmptyText
   )
 
-  def test = Action {
-    Status(488)("Strange response type")
-  }
-
   def main = Action {
     Ok(views.html.main(title = "jim")(content = Html("<h1> a test</h1>")))
   }
@@ -100,8 +96,8 @@ System.out.println("prodSearchWord: " + prodSearchWord);
 
 System.out.println("istest: " + BUtil.isTest)
         //todo: if user login, and item already in cart, replace button text from 'order this item' to 'item already in cart' and disable button click
+        val mapper = new ObjectMapper()
         if (BUtil.isTest){
-        	val mapper = new ObjectMapper()
         	val a = mapper.writeValueAsString(items.asJava)
           	val prodSearchresult = Json.toJson(
           		Map(
@@ -112,7 +108,14 @@ System.out.println("istest: " + BUtil.isTest)
           	Ok(prodSearchresult)
           //Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
         }else{
-          Ok(views.html.productSearchResult("prodlist", items))
+          val a = mapper.writeValueAsString(items.asJava)
+          val prodSearchresult = Json.toJson(
+            Map(
+              "prodList" -> a
+            )
+          )
+          System.out.println("debug 888");
+          Ok(prodSearchresult)//          Ok(views.html.productSearchResult("prodlist", items))
         }
       }
     )
