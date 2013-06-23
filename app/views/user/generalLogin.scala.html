@@ -28,7 +28,6 @@ function showUnlogedInWedgets(){
 }
 function generalLogin(){
 	var loginData = {"email":$('#input_login').val(),"password":$('#input_password').val()};
-	alert(JSON.stringify(loginData));
 	$.ajax({
 		type: "POST",
 		url: "/signIn",
