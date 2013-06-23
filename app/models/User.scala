@@ -11,6 +11,7 @@ import scala.collection.JavaConverters._
 import java.util
 import net.vz.mongodb.jackson.{DBUpdate, JacksonDBCollection}
 import models.UserWithProductItems.UserItemWithProductItem
+import org.apache.commons.collections.CollectionUtils
 
 class User(@BeanProperty @JsonProperty var firstName: String,
            @BeanProperty @JsonProperty var lastName: String,
@@ -28,6 +29,8 @@ class User(@BeanProperty @JsonProperty var firstName: String,
       userItems = new java.util.ArrayList[UserItem]()
     userItems.add(userItem)
   }
+
+  def hasItem = CollectionUtils.isNotEmpty(this.userItems)
 }
 
 object User {
