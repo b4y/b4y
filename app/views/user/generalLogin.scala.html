@@ -37,6 +37,7 @@ function generalLogin(){
 		success: function(loginResult){
 			if(loginResult.success){
 				alert("login success");
+                showLogedInWedgets();
 			}
 	      },
 	      error:function(){
