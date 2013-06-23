@@ -47,15 +47,13 @@ function generalLogin(){
 </script>
 <div class="browser_wid">
 	<div class="float_left center_80_pcnt" id="searchInBannerSearch">
-		<form id="actionSearch" action="prodSearchResult" method="POST">
-	        <select name="searchIndex" class="dataSelect" id="prodSearchIndexTop">
-	        @searchIndices.map { searchIndex =>
-	            <option value=@searchIndex>@searchIndex</option>
-	        }
-	        </select>		
-			<input type="text" name="prodSearchWord" class="search" id="prodSearchKeyWordTop"/>
-			<button onclick="searchProd('#prodSearchIndexTop','#prodSearchKeyWordTop');">search</button>
-		</form>
+        <select name="searchIndex" class="dataSelect" id="prodSearchIndexTop">
+        @searchIndices.map { searchIndex =>
+            <option value=@searchIndex>@searchIndex</option>
+        }
+        </select>		
+		<input type="text" name="prodSearchWord" class="search" id="prodSearchKeyWordTop"/>
+		<button onclick="searchProd('#prodSearchIndexTop','#prodSearchKeyWordTop');">search</button>
 	</div>
 
 	<div id="searchInBannerEmpty" class="float_left"><span>&nbsp;</span></div>

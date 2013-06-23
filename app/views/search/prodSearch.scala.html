@@ -59,6 +59,7 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 		data: submtData,
 		cache: false,
 		success: function(regResult){
+alert(JSON.stringify(regResult));			
 			$("#searchProds").hide();
 			$("#userItems").show();
 			prodList = eval(regResult["prodList"]);
@@ -88,7 +89,7 @@ function getProdItemSearch(productNode){
 	+"	<br clear='both'></br>"
 	+"	<span name='prodDescription'>Description:</span>"
 	+"	<br clear='both'/>"
-	+"	<span name='currentPrice'>Current price: </span>"
+	+"	<span name='currentPrice'>Current price: " + productNode["priceHistory"][0]["price"] + "</span>"
 	+"	<br clear='both'/>"
     +"  Your Price: <input type='text' name='yourPrice'/>"
 	+"	<br clear='both'/>"    
@@ -96,8 +97,7 @@ function getProdItemSearch(productNode){
 	+"</div>"
     + "</div>";
    
-  //  alert(divStr);
-	return divStr;
+  	return divStr;
 }
 
 </script>

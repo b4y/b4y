@@ -270,6 +270,8 @@ System.out.println("debuglogin111")
     else {
       val user = User.findByField(User.DbFieldEmail, email)
       val passwordEncrypted = BUtil.encrypt(password)
+System.out.println("email "+ email)      
+System.out.println("passwordEncrypted "+ passwordEncrypted)      
 System.out.println("debuglogin222")      
       if (user.password.equalsIgnoreCase(passwordEncrypted) && user.accountStatus == User.AccountStatusActive){
 System.out.println("debuglogin333")         
