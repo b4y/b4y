@@ -91,7 +91,9 @@ System.out.println("prodSearchWord: " + prodSearchWord);
             itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
           }
         }
-System.out.println("istest: " + BUtil.isTest)        
+
+System.out.println("istest: " + BUtil.isTest)
+        //todo: if user login, and item already in cart, replace button text from 'order this item' to 'item already in cart' and disable button click
         if (BUtil.isTest){
         	val mapper = new ObjectMapper()
         	val a = mapper.writeValueAsString(items.asJava)
