@@ -1,6 +1,17 @@
 @(isLoggedIn: Boolean,searchIndices: List[String])
-@if(isLoggedIn){
-	<div class="float_left center_80_pcnt">
+<script>
+	$(function(){
+		var loggedIn = @isLoggedIn;
+		if(loggedIn){
+			$('#searchInBannerSearch').show();
+			$('#searchInBannerEmpty').hide();
+		}else{
+			$('#searchInBannerSearch').show();
+			$('#searchInBannerEmpty').hide();
+		}
+	})
+</script>
+	<div class="float_left center_80_pcnt" id="searchInBannerSearch">
 		<form id="actionSearch" action="prodSearchResult" method="POST">
 	        <select name="searchIndex" class="dataSelect">
 	        @searchIndices.map { searchIndex =>
@@ -9,7 +20,7 @@
 	        </select>		
 			<input type="text" name="prodSearchWord" class="search"/>
 			<button onclick="form['actionSearch'].submit();">search</button>
-		</form></div>
-}else{
-	<div id="empty_div" class="float_left"><span>&nbsp;</span></div>
-}
+		</form>
+	</div>
+
+	<div id="searchInBannerEmpty" class="float_left"><span>&nbsp;</span></div>

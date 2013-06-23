@@ -8,15 +8,12 @@ import scala.collection.JavaConverters._
 import models.{User, ProductItem}
 import org.jsoup.Jsoup
 
-
 object BUtil {
   val isTest = false
   val mockUpItems = List(
     ProductItem("On China", "0143121316", "", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", List(PriceAtTime(price = 950, date = new Date)).asJava),
     ProductItem("DK Eyewitness Travel Guide: China", "0756684307", "", "http://ecx.images-amazon.com/images/I/51Xy2XNo2YL._SL160_.jpg", List(PriceAtTime(price = 1835, date = new Date)).asJava),
     ProductItem("Lonely Planet China (Travel Guide)", "1742201385", "", "http://ecx.images-amazon.com/images/I/51NK2%2B-q81L._SL160_.jpg", List(PriceAtTime(price = 2165, date = new Date)).asJava))
-
-
 
   def getUser(session: Session):User = {
     val userIdOption = session.get(Application.SessionNameUserId)
