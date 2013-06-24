@@ -16,7 +16,8 @@ function showLogedInWedgets(){
 	$('#logInUl').hide();
 	$('#logOutUl').show();
 	$('#searchProds').hide();
-	$('#userItems').show();
+	$('#productItems').show();
+	undateItemTab();
 }
 function showUnlogedInWedgets(){
 	$('#searchInBannerSearch').hide();
@@ -24,7 +25,7 @@ function showUnlogedInWedgets(){
 	$('#logInUl').show();
 	$('#logOutUl').hide();
 	$('#searchProds').show();
-	$('#userItems').hide();
+	$('#productItems').hide();
 }
 function generalLogin(){
 	var loginData = {"email":$('#input_login').val(),"password":$('#input_password').val()};

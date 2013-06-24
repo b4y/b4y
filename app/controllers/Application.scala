@@ -174,23 +174,35 @@ System.out.println("istest: " + BUtil.isTest)
   )
 
   def items = Action {implicit request =>{
-    val user:User = try {
-      BUtil.getUser(session)
-    } catch {
-      case ioe: IllegalStateException =>
-        Redirect(routes.Application.index())
-      null
-    }
-    if (null == user){
-      Redirect(routes.Application.signUp()).withNewSession
-    }
-    else {
-      if (BUtil.isTest)
-        Ok(views.html.itemList(searchIndices, (new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
-      else
-        Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
-    }
-  }  }
+	    val user:User = try {
+	      BUtil.getUser(session)
+	    } catch {
+	      case ioe: IllegalStateException =>
+	        Redirect(routes.Application.index())
+	      null
+	    }
+	    if (null == user){
+	      Redirect(routes.Application.signUp()).withNewSession
+	    }
+	    else {
+	      if (BUtil.isTest){
+	        Ok(views.html.itemList(searchIndices, (new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
+	      }else{
+	        val mapper = new ObjectMapper()
+        	val a = mapper.writeValueAsString((new UserWithProductItems(user)).userItemsWithProductItem)
+          	val itemListResult = Json.toJson(
+          		Map(
+          		    "success"->"yes",
+          			"itemList" -> a
+          		)
+          	)
+            System.out.println("debug itemss");  
+          	Ok(itemListResult)	        
+	        //Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
+	      }
+	    }
+  	}  
+  }
 
 
   def deleteItem(id: String) = Action {implicit request =>{
@@ -277,14 +289,10 @@ System.out.println("debuglogin111")
     else {
       val user = User.findByField(User.DbFieldEmail, email)
       val passwordEncrypted = BUtil.encrypt(password)
-System.out.println("email "+ email)      
-System.out.println("passwordEncrypted "+ passwordEncrypted)      
-System.out.println("debuglogin222")      
       if (user.password.equalsIgnoreCase(passwordEncrypted) && user.accountStatus == User.AccountStatusActive){
-System.out.println("debuglogin333")         
         val result = Json.toJson(
-                         Map("success" -> Json.toJson("yes") )
-                     )
+               Map("success" -> Json.toJson("yes") )
+        )
         Ok(result).withSession(session + (SessionNameUserId -> user.id))
         //Redirect(routes.Application.items())
         //  .withSession(session + (SessionNameUserId -> user.id))

@@ -25,7 +25,6 @@ function addProd(prodAsin){
 				success: function(addProdResult){
 					if(addProdResult.success){
 						alert("Item added successfully");
-						prodToBeAdded = prodData;						
 						withProd = false;       
 						undateItemTab();
 					}
@@ -46,9 +45,38 @@ function addProd(prodAsin){
 		withProd = true;       
 	}	
 }
+
 function undateItemTab(){
-	alert("got it");
+	$.ajax({
+		type: "GET",
+		url: "/items",
+		data: {},
+		cache: false,
+		success: function(itemListResult){
+			if(itemListResult.success){
+				alert(JSON.stringify(itemListResult))
+				var itemList = eval(itemListResult["itemList"]);
+				if(typeof(itemList) != "undefined" && itemList.length > 0){
+					for(var i = 0 ; i < itemList.length; i ++){
+						var divStr = getItemDiv(itemList[i]);
+						var newNode = $(divStr);
+						$("#userItems").append(newNode);
+						$("#userItems").append("<br clear='both'/>");
+					}
+					$("#productItems").empty();
+					$("#productItems").hide();
+					$("#userItems").show();
+			    }
+			}
+	      },
+	      error:function(){
+	          alert("error");
+	      }		
+		}
+	);		
+	
 }
+
 function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 	var submtData = {"searchIndex":$(searchIndexWidgetId).val(), 
 			         "prodSearchWord": $(prodKeyWordWidgetId).val()
@@ -62,15 +90,18 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 		success: function(regResult){
 alert(JSON.stringify(regResult));			
 			$("#searchProds").hide();
-			$("#userItems").show();
+			$("#userItems").empty();
+			$("#userItems").hide();			
+			$("#productItems").empty();
+			$("#productItems").show();
 			prodList = eval(regResult["prodList"]);
 			for(var i = 0 ; i < prodList.length; i ++){
-				var divStr = getProdItemSearch(prodList[i]);
+				var divStr = getProdItemSearchDiv(prodList[i]);
 				var newNode = $(divStr);
-				$("#userItems").append(newNode);
-				$("#userItems").append("<br clear='both'/>");
+				$("#productItems").append(newNode);
+				$("#productItems").append("<br clear='both'/>");
 			}
-			$("#searchProdTemplate").hide();
+			//$("#searchProdTemplate").hide();
 	      },
 	      error:function(){
 	          alert("error");
@@ -79,7 +110,7 @@ alert(JSON.stringify(regResult));
 	);	
 }
 
-function getProdItemSearch(productNode){
+function getProdItemSearchDiv(productNode){
 	var asin = productNode["asin"];
 	var divStr = "<div class='browser_wid align_left' id='" + asin +"'>"
 	+ "<div class='float_left img_box'>"
@@ -94,7 +125,31 @@ function getProdItemSearch(productNode){
 	+"	<br clear='both'/>"
     +"  Your Price: <input type='text' name='yourPrice'/>"
 	+"	<br clear='both'/>"    
-    +"    <button onclick='addProd(" + asin +");'>add</button>"
+    +"    <button onclick='addProd(\"" + asin +"\");'>add</button>"
+	+"</div>"
+    + "</div>";
+   
+  	return divStr;
+}
+
+function getItemDiv(itemNode){
+	var itemId = itemNode["itemId"];
+	var divStr = "<div class='browser_wid align_left' id='" + itemId +"'>"
+	+ "<div class='float_left img_box'>"
+	+ "<img src='" + itemNode.item["img"] + "'/>"
+	+"</div>"
+	+"<div class='float_left content_box'>"
+	+"	<span name='prodName'><b>Name: </b>" + itemNode.item["name"] + "</span>"
+	+"	<br clear='both'></br>"
+	+"	<span name='prodDescription'>Description:</span>"
+	+"	<br clear='both'/>"
+	+"	<span name='orignalPrice'>Original price: " + itemNode["priceOriginal"] + "</span>"
+	+"	<br clear='both'/>"
+	+"	<span name='expectedPrice'>Expected price: " + itemNode["priceExpected"] + "</span>"
+	+"	<br clear='both'/>"
+	+"	<span name='expectedPrice'>Created time: " + itemNode["orderDate"] + "</span>"
+	+"	<br clear='both'/>"
+    +"    <button onclick='alert('buynow'\"" + itemId +"\");'>Buy Now</button><button onclick='alert('delete'\"" + itemId +"\");'>Delete</button>"
 	+"</div>"
     + "</div>";
    
@@ -102,6 +157,7 @@ function getProdItemSearch(productNode){
 }
 
 </script>
+
 	<div id="searchProds">
 		<div>logo1 here</div>
 		<div>
@@ -114,20 +170,10 @@ function getProdItemSearch(productNode){
 			<button onclick="searchProd('#prodSearchIndex','#prodSearchKeyWord');">search</button>
 		</div>
 	</div>
-	<div id="userItems" class="float_left">
-    	<div class="browser_wid align_left" id="searchProdTemplate">
-    		<div class="float_left img_box">
-    			<img name="prodImg" src="http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg"/>
-    		</div>
-    		<div class="float_left content_box">
-	    		<span name="prodName">Name: on china</span>
-	    		<br clear="both"></br>
-	    		<span name="prodDescription">Description:</span>
-	    		<br clear="both"></br>
-	    		<span name="currentPrice">Current price: </span>
-	    		<br clear="both"></br>
-		        <input type="text" name="yourPrice"></input>
-		        <button onclick="alert('place holder')">add</button>
-    		</div>
-    	</div>	
+	
+	<div id="productItems" class="float_left">
 	</div>
+	<div id="userItems" class="float_left">
+	</div>	
+	
+
