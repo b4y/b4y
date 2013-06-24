@@ -62,7 +62,7 @@ function submtReg(){
 		data: submtData,
 		cache: false,
 		success: function(regResult){
-			alert(JSON.stringify(regResult));
+//alert(JSON.stringify(regResult));
 			if(regResult["success"] == "yes"){
 				$("#signup_div").dialog("close");	  
 			}

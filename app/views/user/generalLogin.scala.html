@@ -10,6 +10,10 @@ $(function(){
 function showRegisterBox(){
 	$("#signup_div").dialog({width: 520, position:[350, 150]}).show();
 }
+function hideRegisterBox(){
+	$("#signup_div").dialog().hide();
+}
+
 function showLogedInWedgets(){
 	$('#searchInBannerSearch').show();
 	$('#searchInBannerEmpty').hide();
@@ -38,6 +42,7 @@ function generalLogin(){
 			if(loginResult.success){
                 showLogedInWedgets();
                 loggedIn = true;
+                hideRegisterBox();
 			}
 	      },
 	      error:function(){
@@ -69,7 +74,6 @@ function generalLogin(){
 		</ul>
 		<ul id="logOutUl">
             <a href="/signOut">log out</a>
-			<li><button>Log out</button></li>
 		</ul>
 	</div>
 </div>

@@ -206,19 +206,29 @@ System.out.println("istest: " + BUtil.isTest)
 
 
   def deleteItem(id: String) = Action {implicit request =>{
-    val user = BUtil.getUser(session)
-    val itemsRemained = user.userItems.asScala.filterNot(_.itemId.equalsIgnoreCase(id)).toList.asJava
-    user.userItems = new util.ArrayList[UserItem]()
-    user.userItems.addAll(  itemsRemained)
-    User.save(user)
-    Redirect(routes.Application.items())
-  } }
+System.out.println("itmid: " + id)    
+	    val user = BUtil.getUser(session)
+	    val itemsRemained = user.userItems.asScala.filterNot(_.itemId.equalsIgnoreCase(id)).toList.asJava
+	    val result = Json.toJson(
+	      Map(
+	        "success" -> Json.toJson("yes")
+	      )
+	    )
+	    Ok(result)	    
+//	    user.userItems = new util.ArrayList[UserItem]()
+//	    user.userItems.addAll(  itemsRemained)
+//	    User.save(user)
+//	    Redirect(routes.Application.items())
+  	} 
+  }
 
 
 
   def buyItem(id: String, qty:Int = 1) = Action {
     val item = ProductItem.load(id)
     val purchaseUrl = testClient.addToCart(item.asin, qty)
+System.out.println("itemid: " + id)    
+System.out.println("purchaseUrl: " + purchaseUrl)
     Redirect(purchaseUrl)
   }
 

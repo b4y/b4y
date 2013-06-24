@@ -54,7 +54,7 @@ function undateItemTab(){
 		cache: false,
 		success: function(itemListResult){
 			if(itemListResult.success){
-				alert(JSON.stringify(itemListResult))
+//alert(JSON.stringify(itemListResult))
 				var itemList = eval(itemListResult["itemList"]);
 				if(typeof(itemList) != "undefined" && itemList.length > 0){
 					for(var i = 0 ; i < itemList.length; i ++){
@@ -81,14 +81,14 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 	var submtData = {"searchIndex":$(searchIndexWidgetId).val(), 
 			         "prodSearchWord": $(prodKeyWordWidgetId).val()
 			        };
-	alert(JSON.stringify(submtData));
+//	alert(JSON.stringify(submtData));
 	$.ajax({
 		type: "POST",
 		url: "/prodSearchResult",
 		data: submtData,
 		cache: false,
 		success: function(regResult){
-alert(JSON.stringify(regResult));			
+//alert(JSON.stringify(regResult));			
 			$("#searchProds").hide();
 			$("#userItems").empty();
 			$("#userItems").hide();			
@@ -149,13 +149,35 @@ function getItemDiv(itemNode){
 	+"	<br clear='both'/>"
 	+"	<span name='expectedPrice'>Created time: " + itemNode["orderDate"] + "</span>"
 	+"	<br clear='both'/>"
-    +"    <button onclick='alert('buynow'\"" + itemId +"\");'>Buy Now</button><button onclick='alert('delete'\"" + itemId +"\");'>Delete</button>"
+    +"    <form name=\"buynow\" id=\"buy_" + itemId +"\" action=\"/items/" + itemId +"/buy\" target=\""+ itemId +"\" method=\"POST\" width=\"50%\">"
+    +        "<button onclick='form[\"buy_" + itemId +"\"].submit();'>Buy Now</button>"
+    +        "<button onclick='deleteItem(\"" + itemId +"\");return false;'>Delete</button>"
+    +	  "</form>"
 	+"</div>"
     + "</div>";
    
   	return divStr;
 }
 
+function deleteItem(itemId){
+	$.ajax({
+		type: "POST",
+		url: "/items/"+itemId+"/delete",
+		data: {},
+		cache: false,
+		success: function(delResult){
+//alert(JSON.stringify(delResult));			
+			if(delResult.success){
+				$("#"+itemId).remove();
+			}
+	      },
+	      error:function(){
+	          alert("error");
+	      }		
+		}
+	);	
+	
+}
 </script>
 
 	<div id="searchProds">
