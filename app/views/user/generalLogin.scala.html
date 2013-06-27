@@ -16,6 +16,29 @@ function hideRegisterBox(){
 
 function showLogedInWedgets(){
 	$('#searchInBannerSearch').show();
+    var filter = $("#prodSearchKeyWordTop").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "http://completion.amazon.com/search/complete",
+                type: "GET",
+                cache: false,
+                dataType: "jsonp",
+                success: function (data) {
+                    response(data[1]);
+                },
+                data: {
+                    q: request.term,
+                    "search-alias": cearchCat,
+                    mkt: "1",
+                    callback: '?'
+                }
+            });
+        }
+    });
+    $('#prodSearchIndexTop').change(function() {
+    	cearchCat = $(this).val();	  
+    });
+    
 	$('#searchInBannerEmpty').hide();
 	$('#logInUl').hide();
 	$('#logOutUl').show();
