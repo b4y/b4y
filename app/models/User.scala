@@ -17,7 +17,7 @@ class User(@BeanProperty @JsonProperty var firstName: String,
            @BeanProperty @JsonProperty var email: String,
            @BeanProperty @JsonProperty var password: String,
            @BeanProperty @JsonProperty var accountStatus: Int,
-           @BeanProperty @JsonProperty var userItems: java.util.ArrayList[UserItem]
+           @BeanProperty @JsonProperty var userItems: java.util.List[UserItem]
             ) extends DbId {
   def this() = this(firstName = "", lastName = "", email = "", password = "", accountStatus = 0,
                     new java.util.ArrayList[UserItem]())

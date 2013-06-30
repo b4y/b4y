@@ -191,19 +191,15 @@ System.out.println("istest: " + BUtil.isTest)
 
 
   def deleteItem(id: String) = Action {implicit request =>{
-System.out.println("itmid: " + id)    
 	    val user = BUtil.getUser(session)
-	    val itemsRemained = user.userItems.asScala.filterNot(_.itemId.equalsIgnoreCase(id)).toList.asJava
+    user.userItems = user.userItems.asScala.filterNot(_.itemId.equalsIgnoreCase(id)).toList.asJava
+    User.save(user)
 	    val result = Json.toJson(
 	      Map(
 	        "success" -> Json.toJson("yes")
 	      )
 	    )
-	    Ok(result)	    
-//	    user.userItems = new util.ArrayList[UserItem]()
-//	    user.userItems.addAll(  itemsRemained)
-//	    User.save(user)
-//	    Redirect(routes.Application.items())
+	    Ok(result)
   	} 
   }
 
