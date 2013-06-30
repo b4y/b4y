@@ -313,7 +313,7 @@ System.out.println("debuglogin111")
   }
 
   def signOut = Action { implicit request => {
-    Redirect(routes.Application.signUp()).withNewSession
+    Redirect(routes.Application.index()).withNewSession
   }
     //    Ok(views.html.index("Your new application is ready."))
   }
