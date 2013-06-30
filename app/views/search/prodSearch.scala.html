@@ -114,7 +114,9 @@ function getProdItemSearchDiv(productNode){
 	var asin = productNode["asin"];
 	var divStr = "<div class='browser_wid align_left' id='" + asin +"'>"
 	+ "<div class='float_left img_box'>"
+	+" <a href=\""+ productNode["detailPageURL"]+ "\" target=\"amazon_pop\">"
 	+ "<img src='" + productNode["img"] + "'/>"
+	+" </a>"
 	+"</div>"
 	+"<div class='float_left content_box'>"
 	+"	<span name='prodName'><b>Name: </b>" + productNode["name"] + "</span>"
@@ -133,10 +135,13 @@ function getProdItemSearchDiv(productNode){
 }
 
 function getItemDiv(itemNode){
+	//alert(JSON.stringify(itemNode));
 	var itemId = itemNode["itemId"];
 	var divStr = "<div class='browser_wid align_left' id='" + itemId +"'>"
 	+ "<div class='float_left img_box'>"
+	+" <a href=\""+ itemNode.item["detailPageURL"]+ "\" target=\"amazon_pop\">"
 	+ "<img src='" + itemNode.item["img"] + "'/>"
+	+" </a>"
 	+"</div>"
 	+"<div class='float_left content_box'>"
 	+"	<span name='prodName'><b>Name: </b>" + itemNode.item["name"] + "</span>"
