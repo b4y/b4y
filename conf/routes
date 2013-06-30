@@ -25,7 +25,6 @@ GET     /items                      controllers.Application.items
 POST    /items/:id/delete           controllers.Application.deleteItem(id: String)
 POST    /items/:id/buy              controllers.Application.buyItem(id: String)
 
-GET     /signUp                     controllers.Application.start
 POST    /signUp                     controllers.Application.signUp
 POST    /signIn                     controllers.Application.signIn
 GET     /signOut                    controllers.Application.signOut

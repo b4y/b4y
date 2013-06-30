@@ -32,7 +32,7 @@ object Application extends Controller {
 
     }
     else
-      Redirect(routes.Application.signUp())
+      Ok(views.html.storeFront(isLoggedIn = false, searchIndices = searchIndices))
   }
 //    Ok(views.html.index("Your new application is ready."))
   }
@@ -232,9 +232,6 @@ System.out.println("purchaseUrl: " + purchaseUrl)
     Redirect(purchaseUrl)
   }
 
-  def start = Action {
-    Ok(views.html.storeFront(isLoggedIn = false, searchIndices = searchIndices))
-  }
   val signUpForm = Form(tuple(
     "firstName" -> nonEmptyText,
     "lastName" -> nonEmptyText,
