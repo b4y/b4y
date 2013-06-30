@@ -13,29 +13,14 @@ import util.Date
 import models.ProductItem.PriceAtTime
 import models.User.UserItem
 import play.api.libs.json.Json
-import scala.collection.mutable.ListBuffer
-import play.api.libs.json.JsObject
-import play.api.libs.json.JsValue
-import play.api.libs.json.JsArray
 import org.codehaus.jackson.map.ObjectMapper
 
 object Application extends Controller {
   val SessionNameUserId = "UserId"
   def index = Action { implicit request => {
     val userId = session.get(SessionNameUserId)
-    if (userId.isDefined){
-      val user = User.load(userId.get)
-      if (user.hasItem)
-        Redirect(routes.Application.items())
-      else
-        Ok(views.html.storeFront(isLoggedIn = true, searchIndices = searchIndices))
-
-    }
-    else
-      Ok(views.html.storeFront(isLoggedIn = false, searchIndices = searchIndices))
-  }
-//    Ok(views.html.index("Your new application is ready."))
-  }
+    Ok(views.html.storeFront(isLoggedIn = userId.isDefined, searchIndices = searchIndices))
+  } }
 
   def tasks = Action {
     Ok(views.html.index(Task.all(), taskForm))
@@ -78,8 +63,8 @@ object Application extends Controller {
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
         val items = if (BUtil.isTest){
-System.out.println("index: " + prodSearchForm.bindFromRequest.data.get("searchIndex").get);          
-System.out.println("prodSearchWord: " + prodSearchWord);        
+System.out.println("index: " + prodSearchForm.bindFromRequest.data.get("searchIndex").get)
+System.out.println("prodSearchWord: " + prodSearchWord)
           BUtil.mockUpItems
         }else {
           val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
@@ -104,7 +89,7 @@ System.out.println("istest: " + BUtil.isTest)
           			"prodList" -> a
           		)
           	)
-            System.out.println("debug 777777");  
+            System.out.println("debug 777777")
           	Ok(prodSearchresult)
           //Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
         }else{
@@ -114,7 +99,7 @@ System.out.println("istest: " + BUtil.isTest)
               "prodList" -> a
             )
           )
-          System.out.println("debug 888");
+          System.out.println("debug 888")
           Ok(prodSearchresult)//          Ok(views.html.productSearchResult("prodlist", items))
         }
       }
@@ -196,7 +181,7 @@ System.out.println("istest: " + BUtil.isTest)
           			"itemList" -> a
           		)
           	)
-            System.out.println("debug itemss");  
+            System.out.println("debug itemss")
           	Ok(itemListResult)	        
 	        //Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
 	      }
