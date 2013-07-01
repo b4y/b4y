@@ -228,22 +228,13 @@ System.out.println("purchaseUrl: " + purchaseUrl)
       data.get("email").get,
       data.get("password").get)
 
-	val result = Json.toJson(
-        Map(
-          "success" -> Json.toJson("yes")
-        )
-      )
-
-    
     if (User.isFieldValueInDb(User.DbFieldEmail, email)){
-//      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
-//        ("error" -> Messages("contact.validation.errors")))
-//      BadRequest(views.html.login(signUpForm))
-      BadRequest(views.html.login(
-        signUpForm.fill("firstName", "lastName", "email", "password")
-          .withGlobalError("Email " + email + " already registered")))
-//
-//        InternalServerError(views.html.login())
+       Ok(Json.toJson(
+	        Map(
+	          "error" -> Json.toJson("Email " + email + " already registered")
+	        )
+    	  )
+       )
     }
     else {
       val passwordEncrypted = BUtil.encrypt(password)
@@ -251,11 +242,11 @@ System.out.println("purchaseUrl: " + purchaseUrl)
                           new util.ArrayList[UserItem]())
       val userSaved = User.save(user)
       EmailUtil.sendSignUpEmail(user.email, user.firstName, user.lastName, userSaved.id)
-      Redirect(routes.Application.signUp()).withNewSession
-//      Redirect(routes.Application.prodSearch())
-//        .withSession(session + (SessionNameUserId -> user.id))
+      Ok(Json.toJson(
+            Map("success" -> Json.toJson("yes") )
+        )
+      )
     }
-   
    }
  }
 
