@@ -70,7 +70,10 @@ class UserWithProductItems(@BeanProperty @JsonProperty var userItemsWithProductI
     this.password = user.password
     this.userItems = user.userItems
      val userItemsWithProductItems = user.userItems.asScala.map(userItem => {
-      val userItemWithProductItem = new UserItemWithProductItem(ProductItem.load(userItem.itemId))
+      val userItemWithProductItem = new UserItemWithProductItem(ProductItem.load(userItem.itemId),
+        "$" + userItem.priceOriginal.toFloat/100,
+        "$" + userItem.priceExpected.toFloat/100,
+        userItem.orderDate.toString)
        userItemWithProductItem.itemId = userItem.itemId
        userItemWithProductItem.orderDate = userItem.orderDate
        userItemWithProductItem.priceOriginal = userItem.priceOriginal
@@ -83,6 +86,12 @@ class UserWithProductItems(@BeanProperty @JsonProperty var userItemsWithProductI
 }
 
 object UserWithProductItems {
-  class UserItemWithProductItem(@BeanProperty @JsonProperty var item: ProductItem) extends UserItem
+
+  class UserItemWithProductItem(@BeanProperty @JsonProperty var item: ProductItem,
+                                @BeanProperty @JsonProperty var priceOriginalDisplay: String,
+                                @BeanProperty @JsonProperty var priceExpectedDisplay: String,
+                                @BeanProperty @JsonProperty var orderDateDisplay: String) extends UserItem {
+//    priceOriginalDisplay = "$" + priceOriginal.toFloat/100
+  }
 
 }

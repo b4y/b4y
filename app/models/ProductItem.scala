@@ -63,7 +63,7 @@ object ProductItem {
       case _: Throwable => 0
     }
     val priceHistory = new util.ArrayList[PriceAtTime]()
-    priceHistory.add(PriceAtTime(price = price, date = new Date))
+    priceHistory.add(PriceAtTime(price = price, priceDisplay = "$" + price.toFloat/100, date = new Date))
     //todo: use real 'no-image' image
     val imgUrl = if (null == item.getMediumImage)
       "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg"
@@ -77,6 +77,7 @@ object ProductItem {
   }
 
   case class PriceAtTime( @BeanProperty @JsonProperty("date1")price: Int,
+                          @BeanProperty @JsonProperty("date3")priceDisplay: String,
                          @BeanProperty @JsonProperty("date2")date: Date)
   }
 

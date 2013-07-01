@@ -112,7 +112,7 @@ System.out.println("istest: " + BUtil.isTest)
       val item = ProductItem.findByField(ProductItem.DbFieldAsin, asin)
       val latestPriceAtTime =  item.priceHistory.get(0)
       if (latestPriceAtTime.price != price || latestPriceAtTime.date.getTime +  OneDay <  (new Date).getTime){
-        val newPRice = PriceAtTime(price, new Date())
+        val newPRice = PriceAtTime(price, "$" + price.toFloat/100, new Date())
         item.priceHistory.add(0, newPRice)
         ProductItem.save(item)
       }
@@ -133,7 +133,7 @@ System.out.println("istest: " + BUtil.isTest)
       data.get("img").get,
       data.get("price").get,
       data.get("newPrice").get)
-    val item = ProductItem(name, asin, detailPageURL, img, List(PriceAtTime(price = priceOriginal.toInt, date = new Date)).asJava)
+    val item = ProductItem(name, asin, detailPageURL, img, List(PriceAtTime(price = priceOriginal.toInt, priceDisplay= BUtil.getPriceDisplay(priceOriginal.toInt), date = new Date)).asJava)
     ProductItem.save(item)
     val userItem = new UserItem(item.id, new Date, priceOriginal.toInt, (priceExpected.toFloat * 100).toInt)
     val user = BUtil.getUser(session)
