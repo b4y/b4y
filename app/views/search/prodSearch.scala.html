@@ -2,7 +2,6 @@
 <script type="text/javascript">
 var prodList = [];
 var withProd = false;
-var prodToBeAdded = null;
 
 function addProd(prodAsin){
 	var prodData = null;
@@ -17,23 +16,7 @@ function addProd(prodAsin){
 	}
 	if(loggedIn){
 		if(prodData != null){
-			$.ajax({
-				type: "POST",
-				url: "/saveUserItem",
-				data: prodData,
-				cache: false,
-				success: function(addProdResult){
-					if(addProdResult.success){
-						alert("Item added successfully");
-						withProd = false;       
-						undateItemTab();
-					}
-			      },
-			      error:function(){
-			          alert("error");
-			      }		
-				}
-			);			
+			addproduct(prodData);			
 		}
 	}else{
         var answer = confirm("Please log in or register");
@@ -43,6 +26,28 @@ function addProd(prodAsin){
         }
 		prodToBeAdded = prodData;						
 		withProd = true;       
+	}	
+}
+
+function addproduct(productObj){
+	if(productObj != null){
+		$.ajax({
+			type: "POST",
+			url: "/saveUserItem",
+			data: productObj,
+			cache: false,
+			success: function(addProdResult){
+				if(addProdResult.success){
+					alert("Item added successfully");
+					withProd = false;       
+					undateItemTab();
+				}
+		      },
+		      error:function(){
+		          alert("error");
+		      }		
+			}
+		);			
 	}	
 }
 
@@ -57,6 +62,7 @@ function undateItemTab(){
 //alert(JSON.stringify(itemListResult))
 				var itemList = eval(itemListResult["itemList"]);
 				if(typeof(itemList) != "undefined" && itemList.length > 0){
+					$("#userItems").empty();
 					for(var i = 0 ; i < itemList.length; i ++){
 						var divStr = getItemDiv(itemList[i]);
 						var newNode = $(divStr);
@@ -81,7 +87,8 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 	var submtData = {"searchIndex":$(searchIndexWidgetId).val(), 
 			         "prodSearchWord": $(prodKeyWordWidgetId).val()
 			        };
-//	alert(JSON.stringify(submtData));
+	alert("1: " + JSON.stringify(submtData));
+	$("body").css("cursor", "wait");
 	$.ajax({
 		type: "POST",
 		url: "/prodSearchResult",
@@ -101,10 +108,12 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 				$("#productItems").append(newNode);
 				$("#productItems").append("<br clear='both'/>");
 			}
+			$("body").css("cursor", "default");
 			//$("#searchProdTemplate").hide();
 	      },
 	      error:function(){
 	          alert("error");
+	          $("body").css("cursor", "default");
 	      }		
 		}
 	);	
@@ -119,10 +128,8 @@ function getProdItemSearchDiv(productNode){
 	+" </a>"
 	+"</div>"
 	+"<div class='float_left content_box'>"
-	+"	<span name='prodName'><b>Name: </b>" + productNode["name"] + "</span>"
+	+"	<span name='prodName'>" + productNode["name"] + "</span>"
 	+"	<br clear='both'></br>"
-	+"	<span name='prodDescription'>Description:</span>"
-	+"	<br clear='both'/>"
 	+"	<span name='currentPrice'>Current price: " + productNode["priceHistory"][0]["priceDisplay"] + "</span>"
 	+"	<br clear='both'/>"
     +"  Your Price: <input type='text' name='yourPrice'/>"
@@ -144,10 +151,8 @@ function getItemDiv(itemNode){
 	+" </a>"
 	+"</div>"
 	+"<div class='float_left content_box'>"
-	+"	<span name='prodName'><b>Name: </b>" + itemNode.item["name"] + "</span>"
+	+"	<span name='prodName'>" + itemNode.item["name"] + "</span>"
 	+"	<br clear='both'></br>"
-	+"	<span name='prodDescription'>Description:</span>"
-	+"	<br clear='both'/>"
 	+"	<span name='orignalPrice'>Original price: " + itemNode["priceOriginalDisplay"] + "</span>"
 	+"	<br clear='both'/>"
 	+"	<span name='expectedPrice'>Expected price: " + itemNode["priceExpectedDisplay"] + "</span>"
