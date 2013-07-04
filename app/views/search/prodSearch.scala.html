@@ -52,6 +52,7 @@ function addproduct(productObj){
 }
 
 function undateItemTab(){
+	$("#userItems").empty();
 	$.ajax({
 		type: "GET",
 		url: "/items",
@@ -96,7 +97,6 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 		success: function(regResult){
 //alert(JSON.stringify(regResult));			
 			$("#searchProds").hide();
-			$("#userItems").empty();
 			$("#userItems").hide();			
 			$("#productItems").empty();
 			$("#productItems").show();
