@@ -87,7 +87,6 @@ function searchProd(searchIndexWidgetId, prodKeyWordWidgetId){
 	var submtData = {"searchIndex":$(searchIndexWidgetId).val(), 
 			         "prodSearchWord": $(prodKeyWordWidgetId).val()
 			        };
-	alert("1: " + JSON.stringify(submtData));
 	$("body").css("cursor", "wait");
 	$.ajax({
 		type: "POST",

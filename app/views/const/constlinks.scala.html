@@ -1,7 +1,15 @@
+<script type="text/javascript">
+function toggleItmeProductPane(paneName){
+	if(paneName=="i"){
+		$("#userItems").show();	
+		$("#productItems").hide();			
+	}else if(paneName=="p"){
+		$("#userItems").hide();	
+		$("#productItems").show();	
+	}
+}
+</script>
 <ul>
-<li><a href="#">support6</a></li>
-<li><a href="#">hot deal</a></li>
-<li><a href="#">hot deal</a></li>
-<li><a href="#">hot deal</a></li>
-<li><a href="#">hot deal</a></li>
+<li><a href="#" onclick=toggleItmeProductPane('i');>My Items</a></li>
+<li><a href="#" onclick=toggleItmeProductPane('p');>Search Products</a></li>
 </ul>
