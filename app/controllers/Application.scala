@@ -250,6 +250,23 @@ System.out.println("purchaseUrl: " + purchaseUrl)
    }
  }
 
+  val resetPasswordRequestForm = Form("email" -> nonEmptyText)
+  def resetPasswordRequest() = Action {
+    implicit request => {
+      resetPasswordRequestForm.discardingErrors
+      val data = resetPasswordRequestForm.bindFromRequest.data
+      val email = data.get("email").get
+      val user = User.findByField(User.DbFieldEmail, email)
+      if (null == user) Ok(Json.toJson(Map("error" -> Json.toJson("Email " + email + " not found in System"))))
+      else {
+        val newPassword = if (BUtil.SuperUserJim.equalsIgnoreCase(user.email)) "hhhhhh" else user.password.substring(0, 6)
+        User.resetPassword(user, newPassword)
+        EmailUtil.sendResetPasswordEmail(user.email, user.firstName, user.lastName, user.id, newPassword)
+        Ok(Json.toJson(Map("success" -> Json.toJson("yes"))))
+      }
+    }
+  }
+
   def resetPassword(email: String, newPassword: String) = Action {
     implicit request => {
       val user = User.findByField(User.DbFieldEmail, email)

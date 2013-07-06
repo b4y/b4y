@@ -9,6 +9,7 @@ import models.{User, ProductItem}
 import org.jsoup.Jsoup
 
 object BUtil {
+  val SuperUserJim = "jigang_hao@hotmail.com"
   val isTest = false
   val mockUpItems = List()
 //    ProductItem("On China", "0143121316", "", "http://ecx.images-amazon.com/images/I/41nPFVINbhL._SL160_.jpg", List(PriceAtTime(price = 950, date = new Date)).asJava),

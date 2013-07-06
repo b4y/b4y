@@ -76,6 +76,28 @@ alert(JSON.stringify(regResult));
 		}
 	);
 }
+
+function submitResetPassword(){
+   var submtData={"email":$('#resetPassword_input_email').val()};
+   $.ajax({
+     type: "POST",
+     url: "/resetPasswordRequest",
+     data: submtData,
+     cache: false,
+     success: function(regResult){
+        alert(JSON.stringify(regResult));
+        if(regResult["success"] == "yes"){
+            $("#resetPassword_div").dialog("close");
+        }else if(regResult["error"]){
+            $('#err_msg').text(regResult["error"]);
+        }
+     },
+     error:function(){
+        //alert(JSON.stringify(regResult));
+        $('#err_msg').text(regResult["error"]);
+     }
+   });
+}
 </script>
 <div id="signup_div">
 	<span class="signup_label">First name:</span>
@@ -108,4 +130,10 @@ alert(JSON.stringify(regResult));
 		thanks please accept it 
 		</div>
 	</div>
+</div>
+
+<div id="resetPassword_div">
+    <span class="signup_label">Email:</span>
+    <span><input class="signup_input" type="text" name="email" id="resetPassword_input_email"></span>
+    <span><button id="resetPassword_submit" onclick="submitResetPassword();">Submit</button></span>
 </div>

@@ -13,6 +13,13 @@ object EmailUtil {
     this.sendEmail(address, firstName + " " + lastName, subject, text)
   }
 
+  def sendResetPasswordEmail(address: String, firstName: String, lastName: String, userId: String, password:String) {
+    val subject = "Reset your HooraySave password"
+    val text = firstName + ": <br> Your new HooraySAve.come password is: " + password + "<br>" +
+      "You can click the link below to sign in your hooraySave account: <br><a href=\"http://localhost:9000\">HooraySave.com</a>"
+    this.sendEmail(address, firstName + " " + lastName, subject, text)
+  }
+
   def sendPriceMatchEmail(userItemMatched: UserItemMatched) {
     val user = userItemMatched.user
     val item = userItemMatched.item
