@@ -250,8 +250,18 @@ System.out.println("purchaseUrl: " + purchaseUrl)
    }
  }
 
+  def resetPassword(email: String, newPassword: String) = Action {
+    implicit request => {
+      val user = User.findByField(User.DbFieldEmail, email)
+      if (null == user) Ok(Json.toJson(Map("error" -> Json.toJson("Email " + email + " already registered"))))
+      else {
+        User.resetPassword(user, newPassword)
+        Ok(Json.toJson(Map("success" -> Json.toJson("yes"))))
+      }
+    }
+  }
+
   def signIn() = Action {implicit request =>{
-System.out.println("debuglogin111")    
     signUpForm.discardingErrors
     val data = signUpForm.bindFromRequest.data
     val (email, password) = (

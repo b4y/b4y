@@ -1,6 +1,6 @@
 package models
 
-import _root_.util.{DbUtil, DbId}
+import _root_.util.{BUtil, DbUtil, DbId}
 import beans.BeanProperty
 import java.util.Date
 import play.api.Play.current
@@ -35,6 +35,7 @@ class User(@BeanProperty @JsonProperty var firstName: String,
 
 object User {
   val DbFieldEmail = "email"
+  val DbFieldPassword = "password"
   val DbFieldAccountStatus = "accountStatus"
   val AccountStatusPending = 0
   val AccountStatusActive = 1
@@ -47,6 +48,7 @@ object User {
   def save(user: User) = DbUtil.save(dbDelegate, user).asInstanceOf[User]
   def delete(id: String) = db.removeById(id)
   def activateAccount(userId:String) = db.updateById(userId, DBUpdate.set(DbFieldAccountStatus, AccountStatusActive))
+  def resetPassword(user: User, newPassword: String) = db.updateById(user.id, DBUpdate.set(DbFieldPassword, BUtil.encrypt(newPassword)))
 
   class UserItem(@BeanProperty @JsonProperty var itemId: String,
                  @BeanProperty @JsonProperty var orderDate: Date,
