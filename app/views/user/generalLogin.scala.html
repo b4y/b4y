@@ -8,18 +8,25 @@ $(function(){
 	}
 });
 function showRegisterBox(){
-	$("#signup_div").dialog({width: 520, position:[350, 150]}).show();
+	var dia = $("#signup_div").dialog({width: 520, 
+									   position:[350, 150],
+									   modal: true});
+	$("#signup_div").show();
 }
 function hideRegisterBox(){
 	$("#signup_div").dialog().hide();
 }
 
 function showResetPasswordBox(){
-    $("#resetPassword_div").dialog({width: 520, position:[350, 150]}).show();
-    }
+    $("#resetPassword_div").dialog({width: 430, 
+    	                            position:[350, 150],
+    	                            modal: true,
+    	                            height: 65});
+	$("#resetPassword_div").show();    
+}
 function hideResetPasswordBox(){
     $("#resetPassword_div").dialog().hide();
-    }
+}
 
 function showLogedInWedgets(){
 	$('#searchInBannerSearch').show();
@@ -94,7 +101,7 @@ function generalLogin(){
         }
         </select>		
 		<input type="text" name="prodSearchWord" class="search" id="prodSearchKeyWordTop"/>
-		<button onclick="searchProd('#prodSearchIndexTop','#prodSearchKeyWordTop');">search</button>
+		<button id="search_button_top" onclick="searchProd('#prodSearchIndexTop','#prodSearchKeyWordTop');">search</button>
 	</div>
 
 	<div id="searchInBannerEmpty" class="float_left"><span>&nbsp;</span></div>

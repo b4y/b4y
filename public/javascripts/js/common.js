@@ -12,3 +12,13 @@ function verifyEmail(emailAddress){
 function verifyPassword(passOrig, passVerify){
 	return (""!=passOrig) && (passOrig.indexOf(passVerify) == 0)
 }
+
+function setBusyCursor(domId){
+	$("body").css("cursor", "wait");
+	$("#" + domId+"").css("cursor", "wait");	
+}
+
+function resetCursor(domId){
+	$("body").css("cursor", "default");
+	$("#" + domId+"").css("cursor", "default");	
+}

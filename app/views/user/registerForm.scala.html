@@ -1,6 +1,4 @@
 @()
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
-<!-- keep the css here in order to override original -->
 <style type="text/css">
     .ui-dialog .ui-dialog-content 
     { 
@@ -28,7 +26,8 @@
  <script>
  var formVerified = true;
 $(function() {
-	$("#signup_div").dialog({width: 520, position:[350, 150]}).hide();
+	$("#signup_div").hide();
+	$("#resetPassword_div").hide();
 	$("#pass_2").on('keyup change', function(){
 		var orig = $("#pass_1").val();
 		var newp =  $("#pass_2").val();
@@ -56,45 +55,55 @@ function submtReg(){
 			       "lastName":$('#input_lastName').val(),
 			       "email":$('#input_email').val(),
 			       "password":$('#pass_1').val()};
+	setBusyCursor("regis_submit");
 	$.ajax({
 		type: "POST",
 		url: "/signUp",
 		data: submtData,
 		cache: false,
 		success: function(regResult){
-alert(JSON.stringify(regResult));
+//alert(JSON.stringify(regResult));
 			if(regResult["success"] == "yes"){
 				$("#signup_div").dialog("close");	  
 			}else if(regResult["error"]){
 				$('#err_msg').text(regResult["error"]);
 			}
+			resetCursor("regis_submit");
 	      },
 	      error:function(){
 //alert(JSON.stringify(regResult));	    	  
 	    	  $('#err_msg').text(regResult["error"]);
+	    	  resetCursor("regis_submit");
 	      }		
 		}
 	);
 }
 
 function submitResetPassword(){
+   if(!verifyEmail($('#resetPassword_input_email').val())){
+		$('#err_msg_resetpass').text('Please enter a valid email address');
+		return;
+   }
    var submtData={"email":$('#resetPassword_input_email').val()};
+   setBusyCursor("resetPassword_submit");
    $.ajax({
      type: "POST",
      url: "/resetPasswordRequest",
      data: submtData,
      cache: false,
      success: function(regResult){
-        alert(JSON.stringify(regResult));
+        //alert(JSON.stringify(regResult));
         if(regResult["success"] == "yes"){
             $("#resetPassword_div").dialog("close");
         }else if(regResult["error"]){
             $('#err_msg').text(regResult["error"]);
         }
+        resetCursor("resetPassword_submit");
      },
      error:function(){
         //alert(JSON.stringify(regResult));
         $('#err_msg').text(regResult["error"]);
+        resetCursor("resetPassword_submit");
      }
    });
 }
@@ -136,4 +145,7 @@ function submitResetPassword(){
     <span class="signup_label">Email:</span>
     <span><input class="signup_input" type="text" name="email" id="resetPassword_input_email"></span>
     <span><button id="resetPassword_submit" onclick="submitResetPassword();">Submit</button></span>
+    <span><button onclick="$('#resetPassword_div').dialog('close');">Cancel</button></span>
+    <br clear="both">
+	<span class="err_msg center_text" id="err_msg_resetpass"></span>
 </div>

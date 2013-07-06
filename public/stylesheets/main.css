@@ -132,7 +132,7 @@ div .img_box{
 }
 
 /********** signup ***********/
-#signUp_div{
+#signUp_div, #resetPassword_div{
 	font-size:small	
 }
 #signUp_div .signup_label{
