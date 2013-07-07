@@ -11,7 +11,6 @@ import scala.collection.JavaConverters._
 import java.util
 import util.Date
 import models.ProductItem.PriceAtTime
-import models.User.UserItem
 import play.api.libs.json.Json
 import org.codehaus.jackson.map.ObjectMapper
 
