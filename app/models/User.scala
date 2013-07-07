@@ -2,11 +2,9 @@ package models
 
 import _root_.util.{BUtil, DbUtil, DbId}
 import beans.BeanProperty
-import java.util.Date
 import play.api.Play.current
 import org.codehaus.jackson.annotate.JsonProperty
 import play.modules.mongodb.jackson.MongoDB
-import models.User.UserItem
 import scala.collection.JavaConverters._
 import java.util
 import net.vz.mongodb.jackson.{DBUpdate, JacksonDBCollection}
@@ -50,13 +48,7 @@ object User {
   def activateAccount(userId:String) = db.updateById(userId, DBUpdate.set(DbFieldAccountStatus, AccountStatusActive))
   def resetPassword(user: User, newPassword: String) = db.updateById(user.id, DBUpdate.set(DbFieldPassword, BUtil.encrypt(newPassword)))
 
-  class UserItem(@BeanProperty @JsonProperty var itemId: String,
-                 @BeanProperty @JsonProperty var orderDate: Date,
-                 @BeanProperty @JsonProperty var priceOriginal: Int,
-                 @BeanProperty @JsonProperty var priceExpected: Int
-                  ) {
-    def this() = this(itemId = "", orderDate = null, priceOriginal = 0, priceExpected = 0)
-  }
+
 }
 
 class UserWithProductItems(@BeanProperty @JsonProperty var userItemsWithProductItem: java.util.ArrayList[UserItemWithProductItem])
