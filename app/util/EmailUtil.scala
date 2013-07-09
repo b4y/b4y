@@ -35,7 +35,7 @@ object EmailUtil {
   }
 
   private final def sendEmail(recipientEmail: String, recipientName: String, subject: String, htmlText: String) {
-    val sender = "jigang_hao@hotmail.com"
+    val sender = "support@hooraysave.com"
     Mailer.sendEmail(Email(
       subject = subject,
       from = EmailAddress("B4y", sender),
