@@ -6,7 +6,7 @@ import models.UserWithProductItems.UserItemWithProductItem
 import models.UserItemMatched
 
 object EmailUtil {
-  val host = "hooraySave.com"
+  val host = "http://hooraySave.com"
   val companyName = "HooraySave.com"
   def sendSignUpEmail(address: String, firstName: String, lastName: String, userId: String) {
     val subject = "Welcome to " + companyName + " " + firstName + "!"
