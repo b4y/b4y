@@ -6,17 +6,19 @@ import models.UserWithProductItems.UserItemWithProductItem
 import models.UserItemMatched
 
 object EmailUtil {
+  val host = "hooraySave.com"
+  val companyName = "HooraySave.com"
   def sendSignUpEmail(address: String, firstName: String, lastName: String, userId: String) {
-    val subject = "Welcome to b4y " + firstName + "!"
-    val text = "Welcome to b4y, " + firstName + "! <br> Plelase click the link below to activate your account: <br>" +
-      "<a href=\"http://localhost:9000/activateAccount/"+ userId+"\">" + "Activate accont</a>"
+    val subject = "Welcome to " + companyName + " " + firstName + "!"
+    val text = subject+ "<br> Plelase click the link below to activate your account: <br>" +
+      "<a href=" + host + "/activateAccount/"+ userId+ ">" + "Activate accont</a>"
     this.sendEmail(address, firstName + " " + lastName, subject, text)
   }
 
   def sendResetPasswordEmail(address: String, firstName: String, lastName: String, userId: String, password:String) {
     val subject = "Reset your HooraySave password"
-    val text = firstName + ": <br> Your new HooraySAve.come password is: " + password + "<br>" +
-      "You can click the link below to sign in your hooraySave account: <br><a href=\"http://localhost:9000\">HooraySave.com</a>"
+    val text = firstName + ": <br> Your new " + companyName + " password is: " + password + "<br>" +
+      "You can click the link below to sign in your hooraySave account: <br><a href=" + host + ">HooraySave.com</a>"
     this.sendEmail(address, firstName + " " + lastName, subject, text)
   }
 
@@ -30,7 +32,7 @@ object EmailUtil {
       "price we found for you: $" + userItemMatched.priceMatched.toFloat/100 + " <br><br>" +
       "Hurry up before the deal is gone! Click the link below to buy: <br>\n" +
       "<a href=\"" + item.detailPageURL + "\">" + "Buy " + item.name + "</a><br><br>"+
-    "Enjoy!<br><br>\n\nB4y"
+    "Enjoy!<br><br>\n\n" + companyName + " team"
     this.sendEmail(user.email, user.firstName + " " + user.lastName, subject, text)
   }
 
@@ -38,7 +40,7 @@ object EmailUtil {
     val sender = "support@hooraysave.com"
     Mailer.sendEmail(Email(
       subject = subject,
-      from = EmailAddress("B4y", sender),
+      from = EmailAddress(sender, sender),
       replyTo = None,
       recipients = List(Recipient(Message.RecipientType.TO, EmailAddress(recipientName, recipientEmail))),
       text = "text",
