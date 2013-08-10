@@ -95,6 +95,8 @@ function generalLogin(){
 				}
                 showLogedInWedgets();
                 loggedIn = true;
+                firstName = loginResult.firstName;
+                $("#logOutLi").text(firstName);
                 hideRegisterBox();
 			}
 	      },
@@ -126,8 +128,5 @@ function generalLogin(){
 			<li><button onclick='showRegisterBox(); return false;'>Register</button></li>
             <li><button onclick='showResetPasswordBox(); return false;'>forget password?</button></li>
         </ul>
-		<ul id="logOutUl">
-            <a href="/signOut">log out</a>
-		</ul>
 	</div>
 </div>

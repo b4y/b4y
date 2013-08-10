@@ -296,7 +296,8 @@ System.out.println("purchaseUrl: " + purchaseUrl)
       val passwordEncrypted = BUtil.encrypt(password)
       if (user.password.equalsIgnoreCase(passwordEncrypted) && user.accountStatus == User.AccountStatusActive){
         val result = Json.toJson(
-               Map("success" -> Json.toJson("yes") )
+               Map("success" -> Json.toJson("yes"),
+                   "firstName" -> Json.toJson(user.firstName) )
         )
         Ok(result).withSession(session + (SessionNameUserId -> user.id))
         //Redirect(routes.Application.items())
