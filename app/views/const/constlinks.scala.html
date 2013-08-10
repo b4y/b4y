@@ -2,10 +2,17 @@
 function toggleItmeProductPane(paneName){
 	if(paneName=="i"){
 		$("#userItems").show();	
+		$("#dealItems").hide();
 		$("#productItems").hide();			
 	}else if(paneName=="p"){
 		$("#userItems").hide();	
+		$("#dealItems").hide();	
 		$("#productItems").show();	
+	}else if(paneName=="d"){
+		$("#userItems").hide();	
+		$("#productItems").hide();	
+		$("#searchProds").hide();
+		$("#dealItems").show();
 	}
 }
 </script>
