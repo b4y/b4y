@@ -72,6 +72,12 @@ div .content_box{
 	height:75px;
 }
 
+div .content_box_userItem{
+	margin: 10px 10px 0px 10px;
+	width:800px;
+	height:150px;
+}
+
 div .img_box{
 	height:75px;
 	width:125px;
