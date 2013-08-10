@@ -127,16 +127,15 @@ function getProdItemSearchDiv(productNode){
 	+" </a>"
 	+"</div>"
 	+"<div class='float_left content_box'>"
-	+"	<span name='prodName'>" + productNode["name"] + "</span>"
-	+"	<br clear='both'></br>"
+	+"	<span name='prodName'><b>" + productNode["name"] + "</b></span>"
+	+"	<br clear='both'/>"
 	+"	<span name='currentPrice'>Current price: " + productNode["priceHistory"][0]["priceDisplay"] + "</span>"
 	+"	<br clear='both'/>"
-    +"  Your Price: <input type='text' name='yourPrice'/>"
-	+"	<br clear='both'/>"    
+    +"  Your Price: <input type='text' name='yourPrice' size='8'/>"
     +"    <button onclick='addProd(\"" + asin +"\");'>add</button>"
 	+"</div>"
     + "</div>";
-   
+
   	return divStr;
 }
 
@@ -163,7 +162,7 @@ function getItemDiv(itemNode){
     +        "<button onclick='deleteItem(\"" + itemId +"\");return false;'>Delete</button>"
     +	  "</form>"
 	+"</div>"
-    + "</div>";
+    + " </div><hr/>";
    
   	return divStr;
 }
