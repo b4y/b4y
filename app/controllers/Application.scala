@@ -18,7 +18,12 @@ object Application extends Controller {
   val SessionNameUserId = "UserId"
   def index = Action { implicit request => {
     val userId = session.get(SessionNameUserId)
-    Ok(views.html.storeFront(isLoggedIn = userId.isDefined, searchIndices = searchIndices))
+    var firstName = "";
+    if(userId.isDefined){
+    	var user = BUtil.getUser(session);
+    	firstName = user.firstName;
+    }
+    Ok(views.html.storeFront(isLoggedIn = userId.isDefined, searchIndices = searchIndices, firstName= firstName))
   } }
 
   def tasks = Action {

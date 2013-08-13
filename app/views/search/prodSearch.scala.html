@@ -69,6 +69,8 @@ function undateItemTab(){
 						var newNode = $(divStr);
 						$("#userItems").append(newNode);
 						$("#userItems").append("<br clear='both'/>");
+						if(i != (itemList.length-1))
+							$("#userItems").append("<hr/>");
 					}
 					$("#productItems").empty();
 					$("#productItems").hide();
@@ -162,7 +164,7 @@ function getItemDiv(itemNode){
     +        "<button onclick='deleteItem(\"" + itemId +"\");return false;'>Delete</button>"
     +	  "</form>"
 	+"</div>"
-    + " </div><hr/>";
+    + " </div>";
    
   	return divStr;
 }

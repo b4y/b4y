@@ -1,4 +1,4 @@
-@(isLoggedIn: Boolean, searchIndices: List[String])
+@(isLoggedIn: Boolean, searchIndices: List[String], firstName: String)
 <html>
 <head>
 <script type="text/javascript">
@@ -6,7 +6,7 @@
 	var loggedIn = @isLoggedIn;
 	var cearchCat = "aps";
 	var prodToBeAdded = null;
-	var firstName = "";
+	var firstName = "@firstName";
 </script>
 <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/main.css")">	
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
