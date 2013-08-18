@@ -376,5 +376,16 @@ System.out.println("purchaseUrl: " + purchaseUrl)
     else
       Ok(views.html.adminItemMatchedList(items))
   } }
-
+  
+  def myProfile() = Action {
+    implicit request => {
+	    val userId = session.get(SessionNameUserId)
+	    var firstName = "";
+	    if(userId.isDefined){
+	    	var user = BUtil.getUser(session);
+	    	firstName = user.firstName;
+	    }
+	    Ok(views.html.mgr.myProfile(isLoggedIn = userId.isDefined, firstName= firstName))
+    }
+  }
 }

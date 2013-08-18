@@ -38,3 +38,4 @@ POST    /adminUsers/:id             controllers.Application.adminDeleteUser(id: 
 GET     /adminUserItems/:id         controllers.Application.adminUserItemList(id: String)
 GET     /adminItems                 controllers.Application.adminItemList
 GET     /runPriceMatch              controllers.Application.runPriceMatch
+GET		/myProfile					controllers.Application.myProfile
