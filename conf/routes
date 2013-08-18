@@ -39,3 +39,4 @@ GET     /adminUserItems/:id         controllers.Application.adminUserItemList(id
 GET     /adminItems                 controllers.Application.adminItemList
 GET     /runPriceMatch              controllers.Application.runPriceMatch
 GET		/myProfile					controllers.Application.myProfile
+POST	/setNewPass					controllers.Application.setNewPass

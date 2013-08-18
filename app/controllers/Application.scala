@@ -185,9 +185,7 @@ System.out.println("istest: " + BUtil.isTest)
           			"itemList" -> a
           		)
           	)
-            System.out.println("debug itemss")
           	Ok(itemListResult)	        
-	        //Ok(views.html.items((new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
 	      }
 	    }
   	}  
@@ -212,8 +210,6 @@ System.out.println("istest: " + BUtil.isTest)
   def buyItem(id: String, qty:Int = 1) = Action {
     val item = ProductItem.load(id)
     val purchaseUrl = testClient.addToCart(item.asin, qty)
-System.out.println("itemid: " + id)    
-System.out.println("purchaseUrl: " + purchaseUrl)
     Redirect(purchaseUrl)
   }
 
@@ -305,8 +301,6 @@ System.out.println("purchaseUrl: " + purchaseUrl)
                    "firstName" -> Json.toJson(user.firstName) )
         )
         Ok(result).withSession(session + (SessionNameUserId -> user.id))
-        //Redirect(routes.Application.items())
-        //  .withSession(session + (SessionNameUserId -> user.id))
       }
       else
         BadRequest(views.html.login(
@@ -317,9 +311,9 @@ System.out.println("purchaseUrl: " + purchaseUrl)
   }
 
   def signOut = Action { implicit request => {
-    Redirect(routes.Application.index()).withNewSession
-  }
-    //    Ok(views.html.index("Your new application is ready."))
+       Redirect(routes.Application.index()).withNewSession
+    }
+
   }
 
   def activateAccount(userId: String) = Action {implicit request =>{
@@ -385,7 +379,41 @@ System.out.println("purchaseUrl: " + purchaseUrl)
 	    	var user = BUtil.getUser(session);
 	    	firstName = user.firstName;
 	    }
-	    Ok(views.html.mgr.myProfile(isLoggedIn = userId.isDefined, firstName= firstName))
+	    Ok(views.html.mgr.myProfile(isLoggedIn = userId.isDefined, firstName= firstName, ""))
     }
   }
+  
+  val resetPassForm = Form(tuple(
+    "currentPass" -> nonEmptyText,
+    "newPass" -> nonEmptyText)
+  )  
+  def setNewPass() = Action {
+    implicit request => {
+    	resetPassForm.discardingErrors
+    	val data = resetPassForm.bindFromRequest.data
+	    val userId = session.get(SessionNameUserId)
+	    var firstName = "";
+	    if(userId.isDefined){
+	    	var user = BUtil.getUser(session);
+	    	firstName = user.firstName;
+	    	
+	        val passwordEncrypted = BUtil.encrypt(data.get("currentPass").get)
+
+	        if (!user.password.equalsIgnoreCase(passwordEncrypted)){
+	          Ok(Json.toJson(
+	               Map("success" -> Json.toJson("no"),
+	                   "error" -> Json.toJson("Current password is not correct") )
+	          ))
+	        }else{
+	          user.password =  BUtil.encrypt(data.get("newPass").get);
+	          User.save(user)
+	          Ok(Json.toJson(
+	               Map("success" -> Json.toJson("yes"))
+	          ))
+	        }
+	    }else{
+	        Ok(views.html.storeFront(isLoggedIn = userId.isDefined, searchIndices = searchIndices, firstName= firstName))
+	    }
+    }
+  }  
 }

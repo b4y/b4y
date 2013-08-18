@@ -1,0 +1,87 @@
+@(isLoggedIn: Boolean, firstName: String, currentPass: String)
+<html>
+<head>
+<script type="text/javascript" src="@routes.Assets.at("/javascripts/js/common.js")"></script>
+<script type="text/javascript">
+	//global variables
+var loggedIn = @isLoggedIn;
+var formVerified = true;
+function resetPassword(){
+	if($("#pass_1").val() == ""){
+		alert("Current password is empty");
+		return;
+	}
+	if($("#pass_1").val() != $("#pass_2").val()){
+		alert("Password does not match the confirm password");
+		return;
+	}
+  	
+	submtData={"currentPass": $("#current_pass").val(), "newPass": $("#pass_1").val()}
+//	alert(JSON.stringify(submtData));
+	$.ajax({
+		type: "POST",
+		url: "/setNewPass",
+		data: submtData,
+		cache: false,
+		success: function(regResult){
+//alert(JSON.stringify(regResult));
+			if(regResult["success"] == "yes"){
+				alert("Password reset successfully")
+			}else if(regResult["error"]){
+				alert(regResult["error"]);
+			}
+	      },
+	      error:function(){
+//alert(JSON.stringify(regResult));	    	  
+	    	  $('#err_msg').text(regResult["error"]);
+	      }		
+		}
+	);	
+}	
+</script>
+<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/main.css")">	
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		
+</head>	
+<body>
+<div id="banner_div" class="browser_wid block_boder" style="height:650px">
+	<div id="static_links">
+		<ul id="logOutUl" class="float_right">
+			<li id="logOutLi"><a href="/signOut">Log Out</a></li>
+		</ul>
+		<ul class="herizontal_ul">
+		    <li><a href="/">Home</a></li>
+		</ul>
+	</div>
+	
+	<div class="padding_5">
+		<table border="0">
+			<tr>
+				<td>Current Password: </td>
+				<td><input class="signup_input" type="password" name="password" id="current_pass"</td>
+				<td id="pass_verify_err"></td>
+			</tr>
+			<tr>
+				<td>New Password:</td>
+				<td><input class="signup_input" type="password" name="password" id="pass_1"</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Confirm Password:</td>
+				<td><input class="signup_input" type="password" name="password" id="pass_2"</td>
+				<td id="pass2_no_match"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><button onclick="resetPassword();">Submit</button></td>
+				<td></td>
+			</tr>
+			<tr><td colspan="3" id="err_msg"></td></tr>			
+		</table>	
+	</div>
+</div>	
+  @footer()
+</body>
+</html>
