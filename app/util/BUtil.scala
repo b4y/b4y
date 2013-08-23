@@ -40,11 +40,9 @@ object BUtil {
     new sun.misc.BASE64Encoder().encode(md.digest(v.getBytes("UTF-8")))
   }
 
-  def curl(url:String) = {
+  def googleFuzzyMatch(url:String) = {
     val doc = Jsoup.connect(url.replace(" ", "+")).userAgent("Mozilla").get()
-    val bbb = doc.select("span:matchesOwn(Showing results)")
-    val aaa = bbb.parents().get(1).children().first().children().get(1).getAllElements.first().text()
-    aaa
+    doc.select("span:matchesOwn(Showing results)").parents().get(1).children().first().children().get(1).getAllElements.first().text()
   }
 
   def getPriceDisplay(price:Int) = "$" + price.toFloat/100
