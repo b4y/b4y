@@ -70,7 +70,7 @@ System.out.println("prodSearchWord: " + prodSearchWord)
           if (itemsFirstSearch.size > 0)
             itemsFirstSearch
           else {
-            val prodSearchWordRevised = BUtil.curl("https://www.google.com/search?q=" + prodSearchWord)
+            val prodSearchWordRevised = BUtil.googleFuzzyMatch("https://www.google.com/search?q=" + prodSearchWord)
             val itemsAws = testClient.runSearch(prodSearchWordRevised, searchIndex)
             itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
           }

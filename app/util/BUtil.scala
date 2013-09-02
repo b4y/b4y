@@ -2,11 +2,10 @@ package util
 
 import play.api.mvc.Session
 import controllers.Application
-import java.util.Date
-import models.ProductItem.PriceAtTime
 import scala.collection.JavaConverters._
-import models.{User, ProductItem}
+import models.User
 import org.jsoup.Jsoup
+import models.merchant.Deal
 
 object BUtil {
   val SuperUserJim = "jigang_hao@hotmail.com"
@@ -40,12 +39,21 @@ object BUtil {
     new sun.misc.BASE64Encoder().encode(md.digest(v.getBytes("UTF-8")))
   }
 
-  def curl(url:String) = {
-    val doc = Jsoup.connect(url.replace(" ", "+")).userAgent("Mozilla").get()
-    val bbb = doc.select("span:matchesOwn(Showing results)")
-    val aaa = bbb.parents().get(1).children().first().children().get(1).getAllElements.first().text()
-    aaa
+  def googleFuzzyMatch(url: String) =
+    this.curl(url).select("span:matchesOwn(Showing results)").parents().get(1).children().first().children().get(1).getAllElements.first().text()
+
+  def getEbayDeals = {
+    val doc = this.curl("http://deals.ebay.com/feeds/rss")
+    val entries = doc.select("entry").subList(0, 10).asScala
+    val deals = for {entry <- entries } yield  {
+      val title = entry.select("title").get(0).text()
+      val link = entry.select("link").get(0).attr("href")
+      val imgUrl = entry.select("img").get(0).attr("src")
+      Deal(title, link, imgUrl)
+    }
+     deals
   }
 
+  private def curl(url:String) = Jsoup.connect(url.replace(" ", "+")).userAgent("Mozilla").get()
   def getPriceDisplay(price:Int) = "$" + price.toFloat/100
 }
