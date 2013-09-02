@@ -49,13 +49,6 @@ object Application extends Controller {
     "label" -> nonEmptyText
   )
 
-  def main = Action {
-    Ok(views.html.main(title = "jim")(content = Html("<h1> a test</h1>")))
-  }
-
-  def prodSearch = Action {
-    Ok(views.html.productSearch("ProdSearch", searchIndices, prodSearchForm))
-  }
   val prodSearchForm = Form(
     "prodSearchWord" -> nonEmptyText
   )
@@ -95,7 +88,6 @@ System.out.println("istest: " + BUtil.isTest)
           	)
             System.out.println("debug 777777")
           	Ok(prodSearchresult)
-          //Ok(views.html.searchItemList(searchIndices, BUtil.mockUpItems))
         }else{
           val a = mapper.writeValueAsString(items.asJava)
           val prodSearchresult = Json.toJson(
@@ -104,7 +96,7 @@ System.out.println("istest: " + BUtil.isTest)
             )
           )
           System.out.println("debug 888")
-          Ok(prodSearchresult)//          Ok(views.html.productSearchResult("prodlist", items))
+          Ok(prodSearchresult)
         }
       }
     )
@@ -150,7 +142,6 @@ System.out.println("istest: " + BUtil.isTest)
       )
     )
     Ok(result)
-//    Redirect(routes.Application.items())
   } }
 
   val itemOrderForm = Form(tuple(
@@ -174,9 +165,6 @@ System.out.println("istest: " + BUtil.isTest)
 	      Redirect(routes.Application.signUp()).withNewSession
 	    }
 	    else {
-	      if (BUtil.isTest){
-	        Ok(views.html.itemList(searchIndices, (new UserWithProductItems(user)).userItemsWithProductItem.asScala.toList))
-	      }else{
 	        val mapper = new ObjectMapper()
         	val a = mapper.writeValueAsString((new UserWithProductItems(user)).userItemsWithProductItem)
           	val itemListResult = Json.toJson(
@@ -186,7 +174,6 @@ System.out.println("istest: " + BUtil.isTest)
           		)
           	)
           	Ok(itemListResult)	        
-	      }
 	    }
   	}  
   }
