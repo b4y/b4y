@@ -97,6 +97,8 @@ function generalLogin(){
                 loggedIn = true;
                 firstName = loginResult.firstName;
                 hideRegisterBox();
+			}else{
+				alert(loginResult.error);
 			}
 	      },
 	      error:function(){

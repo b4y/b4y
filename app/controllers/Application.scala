@@ -59,11 +59,7 @@ object Application extends Controller {
     prodSearchForm.bindFromRequest.fold(
       errors => BadRequest(views.html.index(Task.all(), errors)),
       prodSearchWord => {
-        val items = if (BUtil.isTest){
-System.out.println("index: " + prodSearchForm.bindFromRequest.data.get("searchIndex").get)
-System.out.println("prodSearchWord: " + prodSearchWord)
-          BUtil.mockUpItems
-        }else {
+        val items = {
           val searchIndex = prodSearchForm.bindFromRequest.data.get("searchIndex").get
           val itemsAws = testClient.runSearch(prodSearchWord, searchIndex)
           val itemsFirstSearch = itemsAws.asScala.map(ProductItem.convertProductItemFromAwsItem(_)).toList.filter(_.priceHistory.get(0).price > 0)
@@ -76,7 +72,6 @@ System.out.println("prodSearchWord: " + prodSearchWord)
           }
         }
 
-System.out.println("istest: " + BUtil.isTest)
         //todo: if user login, and item already in cart, replace button text from 'order this item' to 'item already in cart' and disable button click
         val mapper = new ObjectMapper()
         if (BUtil.isTest){
@@ -272,12 +267,10 @@ System.out.println("istest: " + BUtil.isTest)
       data.get("email").get,
       data.get("password").get)
     if (!User.isFieldValueInDb(User.DbFieldEmail, email)){
-      //      Redirect(routes.Application.signUp).flashing(Flash(signUpForm.data) +
-      //        ("error" -> Messages("contact.validation.errors")))
-      //      BadRequest(views.html.login(signUpForm))
-      BadRequest(views.html.login(
-        signUpForm.fill("firstName", "lastName", "email", "password")
-          .withGlobalError("Email " + email + " is not registered")))
+        val result = Json.toJson(
+               Map("error" -> Json.toJson("Email " + email + " is not registered"))
+        )
+        Ok(result);          
     }
     else {
       val user = User.findByField(User.DbFieldEmail, email)
@@ -289,10 +282,12 @@ System.out.println("istest: " + BUtil.isTest)
         )
         Ok(result).withSession(session + (SessionNameUserId -> user.id))
       }
-      else
-        BadRequest(views.html.login(
-          signUpForm.fill("firstName", "lastName", "email", "password")
-            .withGlobalError("invalid password for email  " + email)))
+      else{
+        val result = Json.toJson(
+               Map("error" -> Json.toJson("invalid password for email  " + email))
+        )
+        Ok(result);          
+      }      
     }
   }
   }
